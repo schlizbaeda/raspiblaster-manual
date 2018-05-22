@@ -1,0 +1,456 @@
+% chapter1.tex -- de (German)
+\chapter{Einleitung}
+
+Vielen Dank für Ihr Interesse an {\autor}s {\Bezeichnung}.\\
+Neben einem CD-Spieler befassen Sie sich hiermit gleichzeitig mit einem 
+vollständigen Computer auf Basis eines {\RPi}, der Ihnen als Bastler viele 
+weitere Möglichkeiten bietet. Lesen Sie diese Bedienungsanleitung durch, um 
+das Gerät vollständig kennenzulernen und möglicherweise sogar nachzubauen.
+
+\section{Rechtliche Hinweise}
+Bei der Konzeption des {\Bezeichnung}s wurde darauf geachtet, nur Software zu
+verwenden, die unter einer freien Lizenz wie FreeBSD, GNU GPL oder Ähnlichem zur
+Verfügung gestellt wird. 
+
+\subsection*{Marken}
+Einige Bezeichnungen in dieser Schrift können Marken sein, deren Benutzung durch
+Dritte für deren Zwecke die Rechte der Inhaber verletzen können.
+
+\subsection*{Links}
+In dieser Bedienungsanleitung sind Links zu externen Seiten im Internet 
+enthalten. Diese Inhalte macht sich der Verfasser {\autor} trotz Verlinkung
+nicht zu eigen, da sie nicht in seinem Einflussbereich stehen! Zum Zeitpunkt der
+Verlinkung waren keine rechtswidrigen Inhalte erkennnbar. Eine ständige 
+Überprüfung auf etwaige rechtsverstoßende Änderungen ist dem Verfasser nach
+geltendem Recht nicht zuzumuten.\\
+Sollten aktuelle oder künftige Inhalte jedoch rechtswidrig sein, so kann der
+Autor darüber per e-mail an \url{mailto:schlizbaeda@gmx.de} informiert werden. 
+Es werden dann entsprechende Maßnahmen zur Beseitigung des/der betroffenen Links 
+ergriffen.
+
+\subsection*{DRM}
+Die offizielle Lesart der Erfinder dieses Unfugs lautet \textit{Digital Rights
+Management}, aber insbesondere die Freie-Software-Bewegung bezeichnet die unter
+diesen Bereich fallenden technischen Verfahren treffender als \textit{Digital 
+Restriction Management}, da viele dieser Verfahren mit den meisten 
+Open-Source-Lizen\-zen nicht vereinbar sind.\\
+Dies bedeutet jedoch \textbf{nicht}, dass DRM ignoriert werden darf! Vielmehr
+wurde um 2003 dem Endverbraucher(!) in Deutschland durch die damalige Regierung
+auferlegt, technisch nicht funktionierendes DRM (\zB einen Kopierschutz auf nicht
+der Spezifikation entsprechenden Audio-CDs, sogenannten Un-CDs) selbständig zu 
+erkennen und entsprechende Maßnahmen zur Einhaltung von DRM zu ergreifen. In den 
+übrigen EU-Staaten dürften ähnliche Gesetze existieren.\\
+\textbf{Für den {\Bezeichnung} kann nicht ausgeschlossen werden, dass einige
+DRM-Ver\-fah\-ren technisch nicht erkannt und daher nicht automatisch 
+berücksichtigt werden!}
+Dies betrifft insbesondere durch einen sogenannten Kopierschutz markierte Un-CDs,
+deren Inhalt streng genommen nicht einmal für die private Verwendung kopiert 
+werden darf! Im wirklich persönlichen Umfeld werden derartige Verstöße derzeit 
+in der Regel jedoch nicht polizeilich verfolgt\dots\\
+\url{https://de.wikipedia.org/wiki/Digital_Rights_Management}
+
+\subsection*{FreeBSD-Lizenz des Audioplayers {\audacious}\\{\audaciousStable}}
+Copyright 2001-2017 Audacious developers and others
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions, and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions, and the following disclaimer in the documentation
+   provided with the distribution.
+
+This software is provided "{as} is"{ and} without any warranty, express or 
+implied. In no event shall the authors be liable for any damages arising from 
+the use of this software.
+
+\url{https://audacious-media-player.org/download}
+
+Im Rahmen dieser Lizenz wurde der Quellcode von {\audacious} mit dem Stand 
+{\audaciousStable} von {\autor} für die Verwendung auf dem {\RPi} angepasst. Das 
+Programm wurde um eine "`eject"'-Funktionalität erweitert, da das Betätigen der 
+Auswurftaste des {CDROM}-Laufwerks bisweilen zu Aufhängern führt. Weitere 
+Informationen werden in Kapitel \ref{sect:compile} beschrieben.\\
+Der Quellcode der geänderten Software kann über den folgenden Link 
+heruntergeladen werden:\\
+\url{https://github.com/schlizbaeda/audacious-raspiblaster}
+
+\subsection*{Bildrechte}
+Alle inhaltlich relevanten Fotos und technischen Abbildungen in diesem Dokument 
+stammen vom Verfasser {\autor} selbst und werden hiermit von ihm unter der 
+\textit{Creative-Commons}-Li\-zenz \textbf{CC-BY-SA 3.0} veröffentlicht. Sie 
+dürfen daher von jedem bei Namensnennung des Urhebers in unveränderter oder 
+auch in veränderter Form unter den gleichen Bedingungen weitergegeben werden:\\
+\includegraphics[height=35px]{CC-BY-SA.png}
+
+In dieser Bedienungsanleitung werden jedoch auch einige Icongrafiken aus 
+anderen Quellen verwendet, die unter folgenden Lizenzen stehen:
+\begin{table}[!h]
+\centering
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|l|p{13.0cm}|}
+\hline
+                                                                    & Der Urheber \textit{Larry Ewing} gab die Grafik unter folgender Bedingung frei:\\
+\parbox[c]{1.2cm}{~\newline \includegraphics[height=35px]{tux.png}} & "`Es ist erlaubt, diese Grafik zu verwenden und/oder zu verändern.\newline
+                                                                        Bedingung ist jedoch: Falls jemand fragt, muss man mich\newline
+                                                                        -- lewing@isc.tamu.edu -- als Urheber nennen und auf GIMP hinweisen."'\\
+\hline
+\parbox[c]{1.2cm}{~\newline \includegraphics[height=35px]{rpiIcon.png}} & Himbeerlogo der {\foundation}:\newline \smaller{\url{https://static.raspberrypi.org/files/Raspberry_Pi_Visual_Guidelines_2018.pdf}}\\
+\hline
+\parbox[c]{1.2cm}{~\newline \includegraphics[height=35px]{audacious.png}} & Desktopicon des Audioplayers {\audacious}:\newline vermutlich CC-BY-SA?\\
+\hline
+\parbox[c]{1.2cm}{~\newline \includegraphics[height=35px]{raspiblaster.png}} & alternatives Desktopicon für einen Audioplayer auf dem {\Bezeichnung}:\newline CC-BY-SA U.S. (Autor: Wallpaper FX, \url{http://www.wallpaperfx.com/})\\
+\hline
+\end{tabular}
+\vspace{0.5cm}
+\caption{Lizensierung der Abbildungen}
+\end{table}
+
+
+\newpage
+\section{Danksagung}
+{\autor} möchte folgenden Personen aus dem deutschen Raspberry Pi Forum\\ 
+(\url{https://forum-raspberrypi.de}) seinen Dank aussprechen:
+
+\textbf{@hyle} \url{https://forum-raspberrypi.de/user/36638-hyle/}:\\
+Dieser Benutzer lieferte viele wertvolle Hinweise zum {\Bezeichnung}, 
+insbesondere die Grundidee, die Auswurftaste des {\CDROM}-Laufwerks zu 
+sperren.
+
+\textbf{@smutbert} \url{https://forum-raspberrypi.de/user/21740-smutbert/}:\\
+Eine echte Koryphäe um das Thema ALSA und dessen Konfigurarion und Einrichtung.
+
+\textbf{@rpi444} \url{https://forum-raspberrypi.de/user/8097-rpi444/},\\
+\textbf{@Tell} \url{https://forum-raspberrypi.de/user/9272-tell/}:\\
+Die beiden zeigten den richtigen Weg auf, wie man es anpackt,
+fremde große C-/C++-Projekte erfolgreich zu kompilieren (Kapitel 
+\ref{sect:compile}).
+
+
+\newpage
+\section{Konventionen dieser Bedienungsanleitung}
+Folgende gestalterische Konventionen werden für diese Bedienungsanleitung 
+festgelegt:
+
+\begin{table}[!h]
+\centering
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{3.5cm}|p{10.5cm}|}
+\hline
+\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = red!75,blur]{Gefahr!} 
+Text
+\end{bclogo}} & Ein Gefahrenhinweis, dessen Nichtbeachtung zu \textbf{Personenschäden} und Geräteschäden führen kann!\\
+\hline
+
+\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcinfo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Achtung} 
+Text
+\end{bclogo}} & Ein Gefahrenhinweis, dessen Nichtbeachtung zu Geräteschäden führen kann!\\
+\hline
+
+\parbox[c]{1em}{\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Text
+\end{bclogo}} & Ein Hinweis mit zusätzlicher Information bzw. relevanter Erläuterung zu einer bestimmten Funktionalität\\
+\hline
+
+\button{Schaltfläche} & Kennzeichnung von Schaltflächen von Software\\
+\hline
+\menuitem{Menüpunkt} & Kennzeichnung von Menüpunkten von Software\\
+\hline
+\cmdPi{RPi-Kommando} & bash-Kommando am {\RPi}\\
+\hline
+\cmdPC{PC-Kommando} & Kommandozeile am Linux-PC\\
+\hline
+\cmdWin{PC-Kommando} & alternativ:\newline Kommandozeile am Windows-PC\\
+\hline
+\comment{Kommentar} & Kommentar in einer Kommandozeile\\
+\hline
+\stdout{Meldung} & Kennzeichnung von Meldungen der Software \textbf{\Bezeichnung}\\
+\hline
+\end{tabular}
+\vspace{0.5cm}
+\caption{Konventionen der Dokumentation}
+\end{table}
+
+
+%\parbox[c]{\textwidth}{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Gefahr} 
+%Dieses Symbol warnt vor gefährlichen Spannungen  
+%\end{bclogo}}	
+%
+%\parbox[c]{\textwidth}{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Gefahr} 
+%Dieses Symbol warnt vor gefährlichen Spannungen  
+%\end{bclogo}}	
+%
+
+%\parbox[c]{1em}{\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis} Text \end{bclogo}
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcattention, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} attention \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcbombe, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} bombe \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcbook, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} book \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bccalendrier, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} calendrier \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcclefa, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} clefa \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bccle, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} cle \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcclesol, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} clesol \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bccoeur, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} coeur \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bccrayon, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} crayon \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bccube, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} cube \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} danger \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdallemagne, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dallemagne \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdautriche, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dautriche \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdbelgique, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dbelgique \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdbulgarie, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dbulgarie \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdfrance, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dfrance \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcditalie, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} ditalie \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdluxembourg, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dluxembourg \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdpaysbas, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dpaysbas \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcdz, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} dz \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bceclaircie, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} eclaircie \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcetoile, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} etoile \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfemme, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} femme \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfeujaune, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} feujaune \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfeurouge, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} feurouge \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfeutricolore, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} feutricolore \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfeuvert, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} feuvert \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcfleur, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} fleur \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bchomme, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} homme \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bchorloge, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} horloge \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcicosaedre, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} icosaedre \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcinfo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} info \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcinterdit, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} interdit \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bclampe, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} lampe \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcloupe, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} loupe \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcneige, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} neige \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcnote, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} note \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcnucleaire, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} nucleaire \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcoctaedre, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} octaedre \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcoeil, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} oeil \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcorne, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} orne \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcours, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} ours \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcoutil, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} outil \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcpeaceandlove, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} peaceandlove \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcpluie, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} pluie \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcplume, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} plume \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcpoisson, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} poisson \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcrecyclage, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} recyclage \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcrosevents, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} rosevents \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcsmiley-bonnehumeur, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} smiley-bonnehumeur \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcsmiley-mauvaisehumeur, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} smiley-mauvaisehumeur \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcsoleil, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} soleil \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcstop, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} stop \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bctakecare, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} takecare \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bctetraedre, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} tetraedre \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bctrefle, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} trefle \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bctrombone, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} trombone \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcvaletcoeur, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} valetcoeur \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcvelo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} velo \end{bclogo}}	
+%\parbox[c]{3.5cm}{\begin{bclogo}[arrondi = 0.2, logo = \bcyin, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{logo} yin \end{bclogo}}	
+%
+
+%% Diese Auflistung könnte irgendwann notwendig werden,
+%% wenn auf Github verschiedene Versionsstände herumgeistern und die
+%% einzelnen Nutzer evtl. verschiedene Stände vorliegen haben...
+%Ausgabestände dieser Dokumentation:
+%
+%\begin{tabular}{llp{0.70\textwidth}}
+%\textbf{Version 1} & 20.02.2016 & Erstversion für Programmversion V0.1\\
+%\textbf{Version 2} & 01.07.2016 & zusätzliche Hinweise zur Software-Installation von Version V0.1\\
+%\textbf{Version 3} & 18.08.2017 & {\Bezeichnung} {\Version}\\
+%\end{tabular}
+
+
+\section{Kurzbeschreibung}
+Der {\Bezeichnung} ist ein CD-Spieler mit eingebautem Stereoverstärker 
+(\hardware{HifiBerry MiniAMP}) und Lautsprechern, mit einer (zumindest in 
+technischer Hinsicht) entfernten Ähnlichkeit zu den seit den 80er-Jahren 
+bekannten Geräten, die im Volksmund auch als \textit{Ghettoblaster} bezeichnet 
+werden. Er besteht aus einem {\RPi} 3B, an dem intern über einen seiner 
+USB-An\-schlüs\-se ein handelsübliches \CDROM-Laufwerk (\hardware{LG \LGdrive}, 
+eigentlich ein DVD-Brenner) angeschlossen ist. Die Bedienung des {\Bezeichnung}s 
+erfolgt über das von der {\foundation} herausgebrachte 7-Zoll {\raspidisplay}.\\
+Neben den internen Lautsprechern können an der Rückseite auch externe 
+Lautsprecherboxen angeschlossen werden. Zwei weitere USB-Anschlüsse und die
+Ethernetbuchse des {\RPi} sind über Neutrikstecker von außen zugänglich.\\
+Die Spannungsversorgung erfolgt über das 230V-Stromnetz. Im {\Bezeichnung} ist 
+dafür ein Einbaunetzteil (\hardware{Meanwell RS-25-05}: 5V, 5A) verbaut, das alle 
+Komponenten mit ausreichenden Leistungsreserven versorgt.
+
+Softwareseitig erfolgt auf dem {\Bezeichnung} die Wiedergabe von Audio-CDs über 
+das Open-Source-Programm {\audacious}, das derzeit als {\audaciousStable} 
+vorliegt. 
+
+\subsection*{Ausblick auf geplante Erweiterungen}
+\begin{compactitem}
+\item{Batteriebetrieb}
+\item{Hardwaretaster und/oder Drehgeber über GPIOs für Lautstärke etc.}
+\item{Mediaplayer für USB-Sticks}
+\item{CD rippen mit \texttt{abcde}}
+\item{DVD-Betrieb (mit kodi-Betriebssystem)}
+\item{Bluetooth-"`Lautsprecher"'}
+\item{UKW- und/oder DAB+-Betrieb}
+\end{compactitem}
+
+
+\section{Stückliste}
+\begin{table}[!h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|r|l|p{2.6cm}|p{5.0cm}|l|p{2.7cm}|}
+\hline
+\textbf{x}	&	\textbf{Hersteller}	&	\textbf{Typ}	&	\textbf{Bezeichnung}			&	\textbf{Lieferant}	&	\textbf{Bestellnr.}\\
+\hline
+		1		&	bopla				&	68626120		&	Botego BO 62612\newline
+																Gehäuse geschlossen\newline
+																308mm x 257mm x 81mm			&	?					&	Altbestand\\
+		1		&	Schurter			&	6762			&	Geräteeinbaustecker-Kombination	&	Bürklin				&	41 F 139\\
+		2		&	RND					&	170-00020		&	Feinsicherung träge 1A			&	reichelt			&	RND 170-00020\\
+		1		&	MeanWell			&	RS 25-5			&	Schaltnetzteil 25W, 5V, 5A		&	reichelt			&	SNT RS 25 5\\
+	%	1		&	{\foundation}		&	?				&	{\raspidisplay}					&	www.raspiprojekt.de	&	TS7DSI\\
+	%	1		&	{\foundation}		&	RPi 3B			&	Raspberry Pi 3B					&	www.raspiprojekt.de	&	RASPI3B\\
+		1		&	Foundation			&	-				&	{\raspidisplay}					&	raspiprojekt		&	TS7DSI\\
+		1		&	Foundation			&	RPi 3B			&	Raspberry Pi 3B					&	raspiprojekt		&	RASPI3B\\
+\hline
+\end{tabular}
+\vspace{0.5cm}
+\caption{Stückliste -- Teil 1}
+\end{table}
+
+\begin{table}[!h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|r|l|p{2.6cm}|p{5.0cm}|l|p{2.7cm}|}
+\hline
+\textbf{x}	&	\textbf{Hersteller}	&	\textbf{Typ}	&	\textbf{Bezeichnung}			&	\textbf{Lieferant}	&	\textbf{Bestellnr.}\\
+\hline
+		1		&	HifiBerry			&	MiniAMP	V1.0	&	Stereoverstärker\newline
+																2x3W Musikleistung				&	reichelt			&	RPI HB\newline MINI AMP\\
+		2		&	Visaton				&	SC 8 N 8Ohm		&	Lautsprecher 30W, 8Ohm			&	reichelt			&	VIS SC 8N-8\\
+	%	2		&	Visaton				& 	GRILLE FRS 8	&	Lautsprecherabdeckung\newline
+	%															82mm x 82mm						&	RS Components GmbH	&	4538953\\
+		2		&	Visaton				& 	GRILLE FRS 8	&	Lautsprecherabdeckung\newline
+																82mm x 82mm						&	RS 					&	4538953\\
+	%	1		&	?					&					&	Lautsprecheranschluss 4-fach	&	RS Components GmbH	&	392683\\
+	%	1       &	Marquardt			&	1839.0105		&	Wippschalter 2P I/O/II\newline
+	%															30mm x 22mm schwarz				&	RS Components GmbH	&	7410823\\
+		1		&	?					&					&	Lautsprecheranschluss 4-fach	&	RS 				 	&	392683\\
+		1       &	Marquardt			&	1839.0105		&	Wippschalter 2P I/O/II\newline
+																30mm x 22mm schwarz				&	RS 				 	&	7410823\\
+
+		1		&	LG					&	\LGdrive		&	Slim Line DVD-Writer			&	Laden				&	vor Ort\\
+		2		&	Neutrik				&	NAUSB-W-B		&	USB-Einbaubuchse				&	reichelt			&	NAUSB-WB\\
+		1		&	Neutrik				&	NE8FDX-P6		&	Ethernetbuchse Cat.6A			& 	reichelt			&	CAT6A BU BK\\
+		1		&	schlizbäda			&	Eigenbau		&	Relaisansteuerung für GPIO4		&						&	\\
+\hline
+\end{tabular}
+\vspace{0.5cm}
+\caption{Stückliste - Teil 2}
+\end{table}
+
+Die diversen Kleinteile wie Schrauben, Verbindungskabel (Ethernet, USB, Eigenbau)
+sind in dieser Stückliste nicht einzeln aufgeführt.
+
+
+\section{Technische Daten}
+\renewcommand{\arraystretch}{1.25}
+
+\subsection{Spannungsversorgung}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Netzspannung				&	88VAC -- 264VAC\\
+Netzfrequenz				&	47Hz -- 63Hz\\
+Stromaufnahme bei 230VAC	&	0,4A\\
+Sekundärspannung			&	5V\\
+Sekundärstrom				&	5A\\
+Sekundärleistung			&	25W\\
+\end{tabular}
+
+\subsection{Audioverstärker (HifiBerry MiniAMP)}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Verstärkertyp				&	HifiBerry MiniAMP V1.0 (Class-D Verstärker)\\
+Musikleistung				&	2 x 3W (max.)\\
+Samplerate					&	44,1kHz -- 192kHz\\
+\end{tabular}
+
+\subsection{\RPi}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+{\RPi} Version				&	{\RPi} 3B\\
+SoC (Broadcom)				&	BCM2837\\
+Architektur					&	ARM Cortex-A53 (quad core)\\
+Taktrate CPU				&	1200MHz\\
+Taktrate GPU				&	300MHz/400MHz\\
+Arbeitsspeicher				&	1GB\\
+Nichtflüchtiger Speicher	&	abhängig von der verwendeten SD-Karte\newline
+								mind. 8GB für Raspbian Stretch Desktop erforderlich\\
+\end{tabular}
+\textbf{Verwendete GPIOs}\\
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+GPIO 4						&	Pin \textbf{7}: Relaisansteuerung für die eject-Sperre\\
+GPIO 2, 3					&   Pins \textbf{3}, \textbf{5}: MiniAMP I2C-Bus\\
+GPIO 18 -- 21				&   Pins \textbf{12}, \textbf{35}, \textbf{38}, \textbf{40}: MiniAMP I2S-Bus\\
+GPIO 26						&	Pin \textbf{37}: MiniAmp shut down power stage\\
+ID SDA, ID SCL				&	Pins \textbf{27}, \textbf{28}: I2C-EEPROM mit Gerätedaten
+\end{tabular}
+
+\subsection{Laufwerk (LG \LGdrive)}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Unterstützte Disk-Formate	&	\mbox{DVD-ROM} (Single/Dual), \mbox{DVD-RW}, 
+								\mbox{DVD-R}, \mbox{DVD+RW}, \mbox{DVD+R}, 
+								\mbox{DVD+R} Double layer, \mbox{DVD-R} Dual 
+								layer, \mbox{DVD-RAM}, \mbox{M-Disc} 
+								\mbox{(DVD+R SL)}, \mbox{CDDA} (CD Digital Audio)
+								\& \mbox{CD-Extra}, \mbox{CD-Plus}, 
+								\mbox{CD-ROM}, \mbox{CD-ROM XA-Ready}, 
+								\mbox{CD-I FMV}, \mbox{CD-TEXT}, 
+								\mbox{CD-Bridge}, \mbox{CD-R}, \mbox{CD-RW},
+								\mbox{Photo-CD} (Single- \& Multi-Session),
+								\mbox{Video CD}, \mbox{DVD-VIDEO}\\
+\end{tabular}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Lesegeschwindigkeiten		&	DVD-R/RW/ROM: 8x/8x/8x max.\newline
+								DVD-R DL: 8x max.\newline
+								DVD-RAM (Ver.2.2 \& Higher): 6x max.\newline
+								M-Disc (DVD+R SL): 8x max.\newline
+								DVD-Video (CSS Compliant Disc) : 4x max.\newline
+								DVD+R/+RW: 8x/8x max.\newline
+								DVD+R DL: 8x max.\newline
+								CD-R/RW/ROM: 24x/24x/24x max.\newline
+								CD-DA (DAE): 24x max.\\
+\end{tabular}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Schreibgeschwindigkeiten	&	DVD-R: 2x, 4x, 8x\newline
+								DVD-R DL: 2x, 4x, 6x\newline
+								DVD-RW: 2x, 4x, 6x\newline
+								DVD-RAM (Ver. 2.2 \& higher): 2x, 3x, 5x\newline
+								M-Disc (DVD+R SL): 4x\newline
+								DVD+R: 2.4x, 4x, 8x\newline
+								DVD+R DL: 2.4x, 4x, 6x\newline
+								DVD+RW: 2.4x, 3.3x, 4x, 8x\newline
+								CD-R: 10x, 16x, 24x\newline
+								CD-RW: 4x, 10x, 16x, 24x\\
+\end{tabular}
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Anschluss					&	USB 2.0\\
+Spannungsversorgung			&	5V DC\\
+max. Stromaufnahme			&	1,6A\\
+\end{tabular}
+
+\textbf{Datenübertragungsrate}\\		
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Sustained					&	CD-ROM: 3,600 kB/s (24x max)\newline
+								DVD-ROM: 11.08 MB/s (8x max)\newline
+								CD-ROM: 140 ms (typisch)\newline
+								DVD-ROM: 160 ms (typisch)\newline
+								DVD-RAM: 200 ms (typisch)\\
+Buffer capacity				&	0.75 MB\\
+MTBF						&	60000 Stunden "`Power On"' (Duty Cycle 10\%)\\
+\end{tabular}
+
+\textbf{Umgebungsbedingungen (Betrieb)}\\
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Temperatur					&	5°C to 40°C\\
+rel. Luftfeuchtigkeit		&	15\% bis 85\%\\
+\end{tabular}
+
+\textbf{Umgebungsbedingungen (Lagerung)}\\
+\begin{tabular}{p{5.0cm}p{10.0cm}}
+Temperatur					&	-30°C to 60°C\\
+rel. Luftfeuchtigkeit		&	10\% to 90\%\\
+\end{tabular}

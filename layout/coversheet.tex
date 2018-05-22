@@ -1,0 +1,61 @@
+% -- coversheet.tex -----------------------------------------------------------
+%
+% Design of the document's cover sheet:
+% - Embedding and formatting logos
+% - names can be found in 'Meta.tex'   
+% ------------------------------------------------------------------------------
+
+\thispagestyle{empty} % changed from 'plain' to 'empty'
+\begin{titlepage}
+\vspace*{-3cm}
+%%------------------------------------------------------------------------------
+%%   insert organisation logo
+%%------------------------------------------------------------------------------
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.25\textwidth]{schlizbaeda.png}
+\end{figure}
+
+\begin{center}
+\LARGE{\textbf{\Dokumentart}}\\[1.5ex] 
+\Large{\Bezeichnung}\\[4ex]
+%%------------------------------------------------------------------------------
+%%   Title of the document
+%%------------------------------------------------------------------------------
+\noindent\rule[1ex]{\textwidth}{3pt} % vertical line
+%\huge{\textbf{\titel}}\\[1.5ex]      % TITLE OF DOCUMENT
+\textbf{\titel}\\[1.5ex]             % TITLE OF DOCUMENT (small font for long caption)
+\noindent\rule[1ex]{\textwidth}{3pt} 
+%\LARGE{\textbf{\untertitel}}\\[6ex]
+%\LARGE{\textbf{\art}}\\[1.5ex]
+\\[2ex]
+
+\normalsize
+%%------------------------------------------------------------------------------
+%%   cover picture
+%%------------------------------------------------------------------------------
+\textbf{\\}
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{coverpic.jpg}
+\end{figure}
+
+%%------------------------------------------------------------------------------
+%%   audacious icon, Copyright, CD player icon
+%%------------------------------------------------------------------------------
+\begin{tabular}{lllr}\\
+\hline
+% line with icons and copyright
+\parbox[c][50px]{0.10\textwidth}{\includegraphics[height=35px]{audacious.png}} & 
+\parbox[c]{0.55\textwidth}{Simplified 2-clause BSD License\\ \copyright\ 2001--2018 by Audacious developers and others} &
+\parbox[c]{0.15\textwidth}{Datum:\\13.04.2018} &
+\parbox[c][50px]{0.10\textwidth}{\includegraphics[height=35px]{tux.png}}\\
+\hline
+\end{tabular}
+
+\end{center}
+
+~\\
+\input{layout/\lang/coversheet} % language-specific text line
+
+\end{titlepage}

@@ -1,0 +1,284 @@
+% chapter2.tex -- de (German)
+\chapter{Bedienungsanleitung}
+
+Dieses Kapitel ist eine klassische Bedienungsanleitung für Benutzer, die den
+{\Bezeichnung} normal verwenden, ohne dabei die Software oder Hardware des 
+Gerätes zu verändern.
+
+
+\section{Einschalten}
+Zum Einschalten des {\Bezeichnung}s muss der Hauptschalter auf der Rückseite des 
+Gerätes in Stellung I geschaltet werden. Es wird der Bootvorgang des {\RPi} 
+gestartet und das Betriebssystem auf der SD-Karte (Raspbian Stretch Desktop vom
+13.03.2018) wird in den Arbeitsspeicher geladen. Nach ca. 10 Sekunden ist der 
+Bootvorgang abgeschlossen und auf dem Display erscheint der Desktop (siehe 
+Abbildung \ref{fig:desktop00}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{desktop00.png}
+\caption{Raspbian Stretch Desktop}
+\label{fig:desktop00}
+\end{figure}
+
+
+\section{{\Bezeichnung} herunterfahren und ausschalten}
+Wie jeder Computer muss auch der {\Bezeichnung} sauber beendet werden!  
+Zunächst muss das Betriebssystem (Raspbian Stretch Desktop) über den Menüpunkt 
+\menuitem{\rpiIcon$\rightarrow$Shutdown...$\rightarrow$He\-runterfahren}
+heruntergefahren werden. Nachdem das Display schwarz geworden ist, muss nochmals 
+für ca. 10 Sekunden gewartet werden, bevor der Strom über den Hauptschalter auf 
+der Geräterückseite abgeschaltet wird.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{\lang/desktop08.png}
+\caption{{\Bezeichnung} herunterfahren}
+\label{fig:desktop08}
+\end{figure}
+
+\begin{bclogo}[arrondi = 0.2, logo = \bcinfo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Achtung}
+Vor dem Abschalten der Stromversorgung ist dafür zu sorgen, dass der {\RPi} 
+vorher komplett heruntergefahren ist! Bei unkontrolliertem Ausschalten kann es 
+ansonsten vorkommen, dass der Strom \textit{genau während eines Schreibzugriffes
+auf die SD-Karte} weggenommen wird. Dieser dadurch möglicherweise unvollständige 
+oder fehlerhafte Schreibzugriff kann das Dateisystem auf der SD-Karte auf 
+undefinierte Weise beschädigen. Auch wenn dies zu 99\% der Fälle nicht eintritt, 
+so sollte es dennoch vermieden werden, um einem Datenverlust auf der SD-Karte 
+vorzubeugen! 
+\end{bclogo}
+
+
+\section{Lautstärke einstellen}
+In der Taskleiste von Raspbian befindet sich rechts oben ein Laustprechersymbol.
+Durch Klick auf dieses Symbol wird ein grafisches Steuerelement in Form eines 
+Schiebereglers geöffnet, mit dem die Wiedergabelautstärke eingestellt werden 
+kann. Die Anzahl der angedeuteten Schallwellen (1 -- 3) zeigt grob die 
+eingestellte Lautstärke an. Ein rotes \textcolor{red}{\texttt{x}} bedeutet
+dabei die Stummschaltung der Audiowiedergabe.
+
+
+\section{Starten des Audioplayers \audacious}
+Die CD-Wiedergabe erfolgt über das Programm {\audacious} -- {\audaciousStable}. 
+Diese Software kann entweder über den Menüpunkt 
+\menuitem{\rpiIcon$\rightarrow$Unterhaltungsme\-dien$\rightarrow$Audacious} 
+gestartet werden oder durch einen Doppelklick auf das Icon "`Audacious"' in der 
+linken unteren Ecke des Desktops.
+
+
+\section{CD einlegen und Wiedergabe starten}
+Zunächst wird das Laufwerk über die Auswurftaste geöffnet und die gewünschte CD 
+eingelegt (siehe Abbildung \ref{fig:insertCD}) und das Laufwerk wieder 
+geschlossen.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{tray_empty.jpg}
+\includegraphics[width=0.4\textwidth]{tray_CD.jpg}
+\caption{CD in Laufwerksschublade einlegen}
+\label{fig:insertCD}
+\end{figure}
+
+Nach kurzer Zeit hat das Laufwerk die CD vollständig eingelesen und Raspbian
+öffnet das Betriebssystemfenster \dialogbox{Wechseldatenträger wurde eingelegt}. 
+Jetzt ist die CD zum Abspielen bereit und dieses Fenster kann mit der 
+Schaltfläche \button{Abbrechen} geschlossen werden. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{\lang/desktop09.png}
+\caption{Systemmeldung "`Wechseldatenträger wurde eingelegt"'}
+\label{fig:desktop09}
+\end{figure}
+
+Das Abspielen der CD wird in {\audacious} über den Menüpunkt 
+\menuitem{Dienste$\rightarrow$CD wiedergeben} gestartet. Alle Titel der CD werden
+zunächst in eine neue Wiedergabeliste von {\audacious} mit der Bezeichnung 
+"`Momentane Wiedergabeliste"' eingetragen. Wenn diese Liste bereits Musiktitel 
+enthält, so werden alle vorhandenen Titel in dieser Liste gelöscht und mit den
+Titeln der eingelegten CD ersetzt! Details siehe Abschnitt \ref{sect:playlist}.
+CDs nach der ursprünglichen CDDA-Spezifikation enthalten keine Metadaten mit 
+Songtiteln, Künstlern etc. Die Liste wird daher mit den Standardbezeichnungen 
+"`Titel <x>"' und der Albumbezeichnung "`Audio-CD"' belegt. Bei neueren CDs sind 
+zusätzlich Metadaten im Format "`CD-TEXT"' enthalten. Wenn das Laufwerk solche 
+Daten findet, werden diese Bezeichnungen in die Wiedergabeliste übernommen.
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Um auch bei klassischen CDs der ersten Generation automatisch Titelinformationen 
+zu erhalten, ermittelt {\audacious} die Metadaten über die Internetdatenbank 
+\textit{Compact Disc Database} (CDDB). Dabei werden die Längen der einzelnen 
+Titel auf der CD zu CDDB gesendet und der Server sucht damit in seiner Datenbank 
+nach den Klartextinformationen zu dieser CD.\\
+Für die Nutzung von CDDB muss der {\Bezeichnung} ans Internet angeschlossen 
+werden!\\
+\url{https://de.wikipedia.org/wiki/CDDB}
+\end{bclogo}
+
+
+\section{Bedienung}
+Die grafische Oberfläche des Audioplayers {\audacious} enthält alle 
+Bedienelemente, die man von einem klassischen CD-Spieler kennt.
+\subsection*{Play/Pause}
+Starten und Unterbrechen der Wiedergabe
+\subsection*{Skip |<<}
+Titelwahl rückwärts
+\subsection*{Skip >>|}
+Titelwahl vorwärts
+\subsection*{Vor- und Rückspulen innerhalb eines Titels}
+Das Spulen innerhalb eines Titels erfolgt unter {\audacious} durch Verschieben 
+der aktuellen Position im Fortschrittsbalken, der die bereits verstrichene Zeit 
+des gerade laufenden Titels anzeigt.
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis} 
+Da mit dieser Methode wirklich sehr schnell an eine bestimmte Stelle (und auch 
+an den Anfang) des Titels gesprungen werden kann, springt die Schaltfläche 
+\textit{Skip |<<} \textbf{immer} zum vorhergehenden Titel und nicht wie bei 
+vielen anderen CD-Spielern zum Anfang des gerade laufenden Titels!
+\end{bclogo}
+\subsection*{Stop}
+Anhalten der Wiedergabe
+\subsection*{eject}
+Öffnen der CD-Schublade des Laufwerks
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Die Funktion \textit{eject} wurde von {\autor} in die für den {\Bezeichnung} 
+vorgesehene {\RPi}-Version des Audioplayers {\audacious} implementiert.
+\end{bclogo}
+
+
+\section{Wiedergabeliste}
+\label{sect:playlist}
+{\audacious} verwaltet alle Musiktitel, die abgespielt werden sollen, in 
+sogenannten Wiedergabelisten (oder auf englisch \textit{Playlists}). Dies ist 
+vor allem für die Zusammenstellung von längeren Listen mit Audiodateien von 
+einem Speichermedium wie einem USB-Massenspeicher gedacht. 
+In {\audacious} können mehrere Wiedergabelisten gleichzeitig geöffnet sein, um 
+die Musik nach verschiedenen Genres (Metal, Klassik, Schlager, Volksmusik) zu
+sortieren. Allerdings wird immer nur Musik aus der gerade aktivierten 
+Wiedergabeliste wiedergegeben.
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis} 
+Beim Start der Wiedergabe einer CD über den Menüpunkt 
+\menuitem{Dienste$\rightarrow$CD wiedergeben} werden immer alle Titel der CD in 
+die Liste "`Momentane Wiedergabe"' eingefügt. Sollte diese Wiedergabeliste noch 
+Titel enthalten, werden diese jetzt gelöscht! Auch dieser besonderen 
+Wiedergabeliste können nach dem Einlesen der CD noch weitere Titel von 
+USB-Laufwerken etc. hinzugefügt werden.\\
+Wird die Wiedergabeliste "`Momentane Wiedergabe"' umbenannt, so wird bei Start 
+der CD-Wiedergabe über den Menüpunkt \menuitem{Dienste$\rightarrow$CD wiedergeben} 
+eine neue Wiedergabeliste mit der Bezeichnung "`Momentane Wiedergabe"' 
+angelegt. 
+\end{bclogo}
+
+
+\section{Audiodateien von anderen Speichermedien abspielen}
+{\audacious} unterstützt auch die Wiedergabe von Audiodateien in vielen Formaten 
+wie MP3 oder FLAC, die auf einem Speichermedium wie einer Daten-CD oder einem
+USB-Laufwerk abgespeichert sind. Ebenso können Mediadateien von der SD-Karte des 
+{\RPi} abgespielt werden.\\
+Bei Videodateien gibt {\audacious} nur den Audiokanal wieder.
+
+
+\section{Behandlung und Reinigung von CDs}
+\begin{compactitem}
+\item{Fassen Sie die CD stets an den Kanten an, um sie sauber zu halten}
+\item{Kleben Sie kein Papier oder Klebeband auf die CD}
+\item{Schützen Sie die CD vor starker Hitze:\\Halten Sie sie vor direkter Sonneneinstahlung und Wärmequellen wie Heizungen fern. Lassen Sie sie auch nicht in einem direkt in der Sonne parkenden Fahrzeug liegen.}
+\item{Verstauen Sie die CD nach dem Anhören immer in ihrer CD-Hülle}
+\end{compactitem}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{CD_handling.png}
+\includegraphics[width=0.3\textwidth]{CD_no_labels.png}
+\includegraphics[width=0.3\textwidth]{CD_cleaning.png}
+\caption{Behandlung von CDs}
+\label{fig:CDhandling}
+\end{figure}
+
+\begin{compactitem}
+\item{Reinigen Sie die CD mit einem fusselfreien Reinigungstuch und wischen Sie dabei von innen nach außen}
+\item{Verwenden Sie keine lösungsmittelhaltigen Reinigungsmittel wie Benzin oder Verdünner}
+\end{compactitem}
+
+
+\section{Fehlerbehebung}
+Bei Aufreten von fehlerhaftem Verhalten des Gerätes sollte zunächst geprüft 
+werden, ob der (vermeintliche) Fehler mit einfachen Mitteln zu beheben ist. 
+Gerade Systeme, auf denen komplexe Software (\zB das Betriebssystem Raspbian 
+oder auch {\audacious}) läuft, sind sehr vielfältig konfigurierbar und nicht 
+jedes unerwartete Verhalten ist wirklich ein Fehler, sondern kann oft durch 
+einfache Maßnahmen beseitigt werden.\\
+Die folgende Liste erhebt keinen Anspruch auf Vollständigkeit:
+
+\subsection{Der {\Bezeichnung} bootet nicht}
+\begin{compactitem}
+\item{Die SD-Karte steckt nicht (mehr) richtig.}
+\item{Das Dateisystem auf der SD-Karte wurde durch falsches Ausschalten beschädigt}
+\item{Auf der SD-Karte wurden wider besseren Wissens benötigte Dateien gelöscht oder verschoben}
+\end{compactitem}
+In all diesen Fällen muss das Gehäuse des {\Bezeichnung}s geöffnet werden, um 
+die SD-Karte des {\RPi} entnehmen zu können, da der {\RPi} davon nicht mehr 
+booten kann. Im Zweifelsfalle muss die SD-Karte an einem externen PC korrigiert 
+oder neu bespielt werden!
+
+{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = red!75,blur]{Gefahr!} 
+Vor dem Öffnen des Gerätes muss der Netzstecker gezogen werden!\\
+Ansonsten besteht die Gefahr eines gefährlichen Stromschlages.
+\end{bclogo}
+
+
+\subsection{Die Auswurftaste am {\CDROM}-Laufwerk reagiert nicht}
+\begin{compactitem}
+\item{Während eine CD wiedergegeben wird, ist die Auswurftaste des Laufwerks gesperrt}
+\end{compactitem}
+Vor dem Auswurf der CD muss in {\audacious} die Schaltfläche \button{Stop} 
+betätigt werden, um die Wiedergabe zu beenden. Erst dann bewirkt die Betätigung 
+der Auswurftaste das Öffnen des Laufwerks.
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Die Schaltfläche \button{eject} in {\audacious} ermöglicht \textit{jederzeit} 
+das Öffnen des {\CDROM}-Lauf\-werks.
+\end{bclogo}
+
+
+\subsection{Der Bildschirm ist dunkel}
+\begin{compactitem}
+\item{Ist der Bildschirmschoner aktiv?\\
+      Eine Berührung des Displays zeigt das Bild wieder an}
+\item{Ist die Stromzufuhr in Ordnung, stecken die Kabel richtig?}
+\item{Sind die Feinsicherungen am Netzschalter in Ordnung?}
+\end{compactitem}
+Überprüfung der Netzleitung auf festen Sitz.\\
+Liefert die Gebäudesteckdose wirklich Netzspannung?\\
+Überprüfung der Feinsicherungen im {\Bezeichnung}. Die Absicherung des Gerätes 
+ist zwingend zweipolig vorzunehmen!
+
+{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = red!75,blur]{Gefahr!} 
+Vor der Kontrolle der Sicherungen muss der Netzstecker gezogen werden, selbst
+wenn der Netzschalter des Gerätes auf 0 steht! Bei geöffneter 
+Sicherungshalterung besteht die Gefahr eines gefährlichen Stromschlages durch 
+Berührung der Kontakte!
+\end{bclogo}
+
+\begin{bclogo}[arrondi = 0.2, logo = \bcinfo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Achtung}
+Beim Wechsel der Feinsicherungen muss darauf geachtet werden, nur Sicherungen des
+gleichen Typs zu verwenden:\\
+max. 250V, 1A träge\\
+\end{bclogo}
+
+
+\subsection{Kein Ton}
+\begin{compactitem}
+\item{Ist die Lautstärke richtig eingestellt? \\
+      Ein mit einem roten \textcolor{red}{\texttt{x}} markiertes 
+      Lautsprechersymbol zeigt eine stummgeschaltete Wiedergabe an.}
+\item{Leise Passage oder völlige Stille auf der CD?}
+\item{läuft die CD wirklich?}
+\item{Sind die Audioquellen (CD, USB-Stick) der in der Wiedrgabeliste aufgeführten Titel noch vorhanden?}
+\item{Ist die CD fehlerhaft oder zu stark verkratzt?\\
+      Abhilfe schafft ein Test mit einer anderen CD}
+\item{Bei Verwendung externer Lautsprecher: Sind die Lautsprecher richtig 
+      angeschlossen?\\
+      Neben einer korrekten Verkabelung am Lautsprecheranschluss ist auf die 
+      richtige Schalterstellung des Lautsprecherschalters auf der Oberseite des 
+      {\Bezeichnung}s zu achten. Zur Gegenprobe den Schalter in Stellung I 
+      bringen. In dieser Schalterstellung erfolgt die Audiowiedergabe über die 
+      eingebauten Lautsprecher.}
+\end{compactitem}

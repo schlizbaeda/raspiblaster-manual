@@ -1,0 +1,799 @@
+% chapter3.tex -- de (German)
+\chapter{Installation und Konfiguration}
+
+In diesem Kapitel wird die Installation des Betriebssystems und aller Teile der 
+Software beschrieben. Ein Schwerpunkt liegt auf der Einrichtung der Toolchain 
+zum Kompilieren der Open-Source-Software {\audacious} auf dem {\RPi}.
+
+{\begin{bclogo}[arrondi = 0.2, logo = \bcdanger, ombre = true, epOmbre = 0.25, couleurOmbre = red!75,blur]{Gefahr!} 
+Ein Teil der in diesem Kapitel beschriebenen Maßnahmen erfordert das Öffnen des 
+Gehäuses des {\Bezeichnung}s, um an die SD-Karte des eingebauten {\RPi} zu 
+gelangen. Um beim Hantieren im Inneren des Gerätes gefährliche Stromschläge zu 
+vermeiden, muss vor dem Öffnen unbedingt der Netzstecker gezogen werden! 
+\end{bclogo}
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Dieses Tutorial wurde auf dem {\RPi} unter \cmd{Linux raspiblaster 4.14.30-v7+ 
+\#1102 SMP Mon Mar 26 16:45:49 BST 2018 armv7l GNU/Linux} durchgeführt.
+
+Am PC weichen die Kommandos je nach verwendetem Betriebssystem (Linux oder 
+Windows) voneinander ab. Auf die Unterschiede wird an den jeweiligen Stellen 
+eingegangen.
+\end{bclogo}
+
+Viele Kommandos müssen in der folgenden Anleitung sowohl auf dem {\RPi} als 
+auch auf einem PC in einem Terminalfenster eingegeben werden. Um die Daten vom 
+PC auf den {\Bezeichnung} kopieren zu können, müssen beide Rechner am LAN (oder 
+WLAN) hängen. Der Datenaustausch erfolgt dabei über \textit{ssh 
+(\textbf{s}ecure \textbf{sh}ell)}.\\
+Anstatt alle Kommandos am {\RPi} über eine zweite USB-Tastatur einzugeben, ist 
+es sinnvoll, am PC ein Terminalfenster zu öffnen, auf dem man mit \textit{ssh} 
+eine Verbindung zum {\RPi} aufbaut und alle Tastatureingaben am PC erledigt. 
+Dies hat vor allem den Vorteil, dass man am PC die Kommandos für den {\RPi} aus 
+diesem PDF-Dokument mit \textit{Copy+Paste} herauskopieren und im 
+ssh-Ter\-mi\-nal\-fens\-ter direkt einfügen kann.\\
+Nur der erste Teil dieses Tutorials ("`raspi-config"') kann nicht 
+\textit{remote} ausgeführt werden, da \textit{ssh} erst auf dem {\RPi} 
+aktiviert werden muss und somit vorher kein Verbindungsaufbau vom PC aus 
+möglich ist.
+
+
+\newpage
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Unter Windows ist \textit{ssh} standardmäßig nicht installiert. Bei Verwendung 
+eines PCs mit diesem Betriebssystem, muss zuerst das Softwarepaket 
+\textit{PuTTY} installiert werden, um sich vom PC aus auf dem {\RPi} über 
+\textit{ssh} einloggen zu können.\\
+Der Download kann von der Seite \url{https://putty.org/} gestartet werden:\\
+\url{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}
+
+Der Verbindungsaufbau zum {\RPi} erfolgt durch Start über den Eintrag 
+\mbox{"`PuTTY64"'} im Windows-Startmenü. Der Login erfolgt über die 
+IP-Adresse und die Benutzerkennung \cmd{pi} samt Passwort (siehe Abbildungen 
+\ref{fig:putty01} und \ref{fig:putty02}).
+\end{bclogo}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{putty01.png}
+\caption{Verbindungsaufbau vom Windows-PC zum {\RPi} über \textit{PuTTY}}
+\label{fig:putty01}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{putty02.png}
+\caption{\textit{PuTTY}-Remote-Konsole des {\RPi} auf dem Windows-PC}
+\label{fig:putty02}
+\end{figure}
+
+
+\newpage
+\section{Raspbian einrichten}
+\subsection*{raspi-config}
+\cmdPi{sudo raspi-config}\\
+\stdout{1 Change User Password \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\comment{\zB "raspiBlaster"}\\
+\stdout{2 Network Options \ \ \ \ \ --> N1 Hostname \ \ \ \ \ \ \ \ \ \ \ \ }\comment{"raspiblaster"\ anstatt "raspberrypi"}\\
+\stdout{4 Localisation Options --> I1 Change Locale}\\
+\stdout{\textcolor{white}{......................} --> I2 Change Timezone}\\
+\stdout{\textcolor{white}{......................} --> I3 Change Keyboard Layout}\\
+\stdout{\textcolor{white}{......................} --> I4 Change Wi-fi Country }\comment{diese Anpassung ist ganz wichtig!}\\
+\stdout{5 Interfacing Options \ --> P2 SSH}
+
+\subsection*{System aktualisieren}
+\cmdPi{sudo apt update }\comment{aktualisiert nur die Metadaten}\\
+\cmdPi{sudo apt upgrade}\comment{Upgrade aller installierten Pakete}\\
+\cmdPi{sudo apt update }\comment{braucht's manchmal, z.B. beim verwendeten Raspbian-Image vom 13.03.2018}\\
+
+\subsection*{Image auf ca. 6,8GB verkleinern}
+TODO:\todo{entweder mein Verfahren oder \cmd{pishrink} von @framp einbinden}
+
+Dieser Schritt ist nicht zwingend notwendig, allerdings bietet er zwei Vorteile:
+\begin{compactitem}
+\item{Das Image ist damit klein genug, um auf \textit{jede} 8GB-SD-Karte zu passen}
+\item{Beim Sichern und Flashen von SD-Karten dauert es nicht ganz so lange}
+\end{compactitem}
+
+\subsection*{Bildausrichtung des original \raspidisplay}
+Die Ausrichtung sollte um 180° gedreht werden, da dies vom Blickwinkel her besser
+ist. In der Datei \filenam{/boot/config.txt} muss die Zeile \cmd{lcd\_rotate=2}
+ergänzt werden.
+
+\cmdPi{sudo nano /boot/config.txt}\\
+\editor{lcd\_rotate=2}
+
+\subsection*{Anpassung des Raspbian-PIXEL-Desktops}
+\uline{Aussehen anpassen:} \comment{reine Geschmackssache}\\
+Menüpunkt \menuitem{\rpiIcon$\rightarrow$Einstellungen$\rightarrow$Appearance Settings: Tab'Desktop'}\\
+Checkbox \checkbox{Wastebasket} ausschalten \comment{brauchen Kinder nicht}\\
+Combobox \combobox{Layout}{Centre image on screen}\\
+Combobox \combobox{Picture}{raspberry-pi-logo.png} \comment{Die Himbeere als Desktopbild festlegen}
+
+\uline{Doppelklickgeschwindigkeit verringern:}\\
+Menüpunkt \menuitem{\rpiIcon$\rightarrow$Einstellungen$\rightarrow$Tastatur und Maus: Tab'Maus'}\\
+Schieberegler \checkbox{Double-click Delay}: \cmd{1990}ms \comment{oder so, 250ms ist am Touchdisplay sehr kurz}
+
+\uline{Bildschirmschoner ausschalten:} \comment{optional!}\\
+Folgende Zeile unter \cmd{[Seat: *]} einfügen:
+
+\cmdPi{sudo nano /etc/lightdm/lightdm.conf}\\
+\editor{[Seat: *]\\xserver-command=X -s 0 -dpms}
+
+
+\section{HiFiBerry MiniAmp installieren}
+\uline{Quellen:}\\
+\url{https://www.hifiberry.com/shop/boards/miniamp}\\
+\url{https://www.hifiberry.com/build/documentation/configuring-linux-3-18-x}\\
+\url{https://support.hifiberry.com/hc/en-us/articles/205377202-Adding-software-volume-control}
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Das Modul HiFiBerry MiniAmp V1.0 muss treibermäßig wie ein HiFiBerry DAC 
+behandelt werden!
+\end{bclogo}
+
+\subsection*{\filenam{/boot/config.txt} bearbeiten}
+Entfernen des Eintrages für das onboard-Soundmodul (Klinke und HDMI):\\
+Auskommentieren oder Löschen des Eintrages \cmd{dtparam=audio=on},\\
+stattdessen "Device Tree Overlay File" für MiniAmp laden:
+
+\newpage
+\cmdPi{sudo nano /boot/config.txt}\\
+\editor{\#dtparam=audio=on\\\vdots\\dtoverlay=hifiberry-dac}
+
+\subsection{ALSA konfigurieren über \filenam{/etc/asound.conf}}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Es ist zu überprüfen, ob im Homeverzeichnis des Benutzers \cmd{pi} die Datei
+\filenam{.asoundrc} vorliegt. Dies ist eine Datei, die benutzerspezifische 
+ALSA-Einstellungen enthält und die Einstellungen von 
+\filenam{/etc/asound.conf} überbügelt!
+\end{bclogo}
+\cmdPi{rm /home/pi/.asoundrc}
+
+\uline{Inhalt von \filenam{/etc/asound.conf}:}\\
+\cmdPi{cat /etc/asound.conf}\\
+\stdout{pcm.!default \{}\\
+\stdout{\ \ type hw card 0}\\
+\stdout{\}}\\
+\stdout{ctl.!default \{}\\
+\stdout{\ \ type hw card 0}\\
+\stdout{\}}
+
+\cmdPi{reboot}\\
+\cmdPi{aplay -l}\\
+\stdout{**** Liste der Hardware-Geräte (PLAYBACK) ****}\\
+\stdout{\smaller{Karte 0: sndrpihifiberry [snd\_rpi\_hifiberry\_dac], Gerät 0: HifiBerry DAC HiFi pcm5102a-hifi-0 []}}\\
+\stdout{\ \ Sub-Geräte: 0/1}\\
+\stdout{\ \ Sub-Gerät \#0: subdevice \#0}
+
+\subsection{ALSA für Lautstärkeregelung aufbohren}
+\uline{erweiterter Inhalt von \filenam{/etc/asound.conf}:}\\
+\cmdPi{cat /etc/asound.conf}\\
+\stdout{\# Einstellungen von @smutbert aus dem deutschen RaspberryPi-Forum:}\\
+\stdout{\# \url{https://forum-raspberrypi.de/user/21740-smutbert/}}\\
+\stdout{pcm.dmixer \{}\\
+\stdout{    type dmix}\\
+\stdout{    ipc\_key 1236}\\
+\stdout{    slave.pcm "hw:sndrpihifiberry"}\\
+\stdout{\}}\\
+\stdout{pcm.softvolume \{}\\
+\stdout{    type softvol}\\
+\stdout{    slave.pcm "dmixer"}\\
+\stdout{    control.name "Master"}\\
+\stdout{    control.card sndrpihifiberry}\\
+\stdout{\}}\\
+\stdout{pcm.!default \{}\\
+\stdout{    type       plug}\\
+\stdout{    slave.pcm  "softvolume"}\\
+\stdout{\}}
+
+23.03.2018 TODO:\todo{Überprüfen, warum das zumindest mit dem omxplayer nicht funzt\dots}\\
+Die von @smutbert bereitgestellte \filenam{/etc/asound.conf} funktioniert mit 
+Raspbian Stretch 2018-03-13 beim omxplayer nicht: Mediadatei bleibt sofort bei 
+0:00 stehen!\\
+\stdout{\# ab hier alter Inhalt:}\\
+\stdout{\#\#pcm.!default \{}\\
+\stdout{\#\# type hw card 0}\\
+\stdout{\#\#\}}\\
+\stdout{\#\#ctl.!default \{}\\
+\stdout{\#\# type hw card 0}\\
+\stdout{\#\#\}}\\
+\stdout{\#}\\
+\stdout{\#pcm.hifiberryMiniAmp \{}\\
+\stdout{\#    type softvol}\\
+\stdout{\#    slave.pcm "plughw:0"}\\
+\stdout{\#    control.name "Master"}\\
+\stdout{\#    control.card 0}\\
+\stdout{\#\}}\\
+\stdout{\#pcm.!default \{}\\
+\stdout{\#    type       plug}\\
+\stdout{\#    slave.pcm  "hifiberryMiniAmp"}\\
+\stdout{\#\}}
+
+\cmdPi{rm /home/pi/.asoundrc}\\
+\cmdPi{reboot}\\
+\cmdPi{speaker-test -c 2}\comment{speaker-test -D hifiberryMiniAmp -c 2}\\
+\cmdPi{alsamixer}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{\lang/alsamixer.png}
+\caption{alsamixer, ein Audiomixer für die Konsole}
+\label{fig:alsamixer}
+\end{figure}
+
+\newpage
+Im \textit{alsamixer} wird der in \filenam{/etc/asound.conf} definierte Regler \textit{Master} angezeigt.
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Die Lautstärke kann jetzt über ALSA geregelt werden!\\
+\textit{alsamixer} greift auf die gleiche Audioeinstellung zu wie der 
+Lautstärkeregler in der Taskleiste von Raspbian Desktop PIXEL.
+\end{bclogo}
+
+\uline{Test:}\\
+\cmdPi{omxplayer -o alsa "01 Saga - Wind Him Up.wav"}
+
+
+\section{{\CDROM}-Laufwerk am {\RPi} in Betrieb nehmen}
+Wenn eine Audio-CD in das externe CD-ROM-Laufwerk (bzw. DVD-Brenner) eingelegt
+wird, so wird sein Inhalt \textit{nicht} unter \filenam{/media/pi/<volume>} 
+gemountet! Vielmehr wird ein virtueller(?) Ordner (bzw. eine URL) geöffnet: 
+\cmd{cdda://sr0/}\\
+Ein direkter Dateizugriff darauf ist nicht möglich. Auch der \textit{omxplayer} 
+kann diesbezüglich nicht zaubern.\\
+\textbf{$\Rightarrow$ Es muss ein Software-CD-Player her!}
+
+\newpage
+\subsection{Erkennen des externen {\CDROM}-Laufwerks am USB-Anschluss}
+\cmdPi{lsusb}\comment{{\CDROM}-Laufwerk nicht mit USB verbunden}\\
+\stdout{\smaller{Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter}}\\
+\stdout{\smaller{Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub}}\\
+\stdout{\smaller{Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub}}\\
+\cmdPi{lsusb}\comment{{\CDROM}-Laufwerk angesteckt}\\
+\stdout{\smaller{\textcolor{darkblue}{Bus 001 Device 006: ID 0e8d:1887 MediaTek Inc.}}}\\
+\stdout{\smaller{Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter}}\\
+\stdout{\smaller{Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub}}\\
+\stdout{\smaller{Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub}}
+
+\subsection{Linux-Paket \textit{eject} installieren}
+\label{sect:eject}
+Zum Öffnen der Schublade des CD-Laufwerks ist das Programmpaket \textit{eject} 
+erforderlich, das im Gegensatz zu einem normalen PC/Laptop auf dem {\RPi} unter 
+Raspbian nicht installiert ist:
+
+\cmdPi{sudo apt install eject}\comment{49,5kB Archive, 225kB Plattenplatz entpackt}\\
+\cmdPi{eject \ \ }\comment{Auswurf des CD-Laufwerks}\\
+\cmdPi{eject -t}\comment{Schließen des CD-Laufwerks: Wird nicht von allen Laufwerken unterstützt!}
+
+%\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Der Aufruf von \cmd{eject -t} kann verwendet werden, um bei Laufwerken, die 
+diese Funktion nicht unterstützen, festzustellen, ob dessen Schublade geöffnet 
+oder geschlossen \textbf{ist}. Falls geöffnet liefert \cmd{eject -t} eine 
+Fehlermeldung und den Exitcode 1.
+%\end{bclogo}
+
+Das Kommando \cmd{eject -i 1} verhindert entgegen der Dokumentation in der 
+\cmd{man}-Page (zumindest beim verwendeten Laufwerk {\LGdrive} \textbf{nicht}, 
+dass das Laufwerk über die Auswurftaste geöffnet werden kann! \\
+Das {\CDROM}-Laufwerk meines Laptops verhält sich sich genauso.
+
+
+\section{\textit{audacious} auf dem {\RPi} kompilieren}
+\label{sect:compile}
+Erste Tests mit verschiedenen Audio- bzw. Mediaplayern ergab, dass die 
+Betätigung der Auswurftaste des {\CDROM}-Laufwerks zu hartnäckigen Aufhängern 
+führt, wenn gerade eine CD wiedergegeben wird, egal mit welchem Audioplayer 
+die Wiedergabe erfolgt. Selbst das Kommando \cmd{sudo kill -9 <prozess-ID>}, 
+bei dem alle betriebssystemseitigen Register gezogen werden, kann den hängenden 
+Prozess nicht sauber beenden!\\
+Der erste Lösungsansatz war, mit dem Kommando \cmd{eject -i 1} das Öffnen 
+der Laufwerksschublade bei Druck auf die Auswurftaste zu verhindern. Aber wie 
+im vorigen Kapitel (Abschnitt \ref{sect:eject}) beschrieben, beißt dieses 
+Kommando (zumindest beim verwendeten Laufwerk \LGdrive) nicht an. Daher wurde 
+im verwendeten Laufwerk der Stromkreis der Auswurftaste unterbrochen und kann 
+über ein Relais geschlossen werden, so dass die erforderliche "`eject-Sperre"' 
+hardwaremäßig erfolgt und mit dem GPIO4 gesteuert werden kann.\\
+Daraus resultierte die Notwendigkeit, eine Auswurffunktionalität inklusive 
+der beschriebenen Sperre in den verwendeten Audioplayer zu implementieren. 
+Hierfür muss der Quellcode entsprechend angepasst und neu kompiliert werden.
+
+
+\subsection{Download und Entpacken des aktuellen Quellcodes}
+Zunächst wurde von der {\audacious}-Homepage die Version {\audaciousStable} 
+heruntergeladen. Sie besteht aus den drei Teilprojekten, die jeweils als
+gepacktes \cmd{tar}-Archiv (ein sogenannter \textit{Tarball}) vorliegen:
+\begin{compactitem}
+\item{\cmd{libaudclient-3.5-rc2.tar.bz2}}
+\item{\cmd{audacious-3.9.tar.bz2}}
+\item{\cmd{audacious-plugins-3.9.tar.bz2}}
+\end{compactitem}
+
+\uline{Quellen:}\\
+\url{https://audacious-media-player.org/download}
+
+\url{https://distfiles.audacious-media-player.org/libaudclient-3.5-rc2.tar.bz2}\\
+\url{https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
+\url{https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}
+
+Davon ausgehend, dass der Download auf einem (Linux-)PC erfolgte, müssen diese
+drei Tarballs zunächst per \textit{ssh} auf den {\RPi} in das Verzeichnis 
+\cmd{/home/pi/audacious\_raspiblaster} kopiert werden:
+
+\cmdPi{cd /home/pi}\\
+\cmdPi{mkdir audacious\_raspiblaster}
+
+\cmdPC{scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}\\
+Am PC erfolgt eine Passwortabfrage für den Benutzer \cmd{pi} auf dem Host
+\cmd{raspiblaster}. Nur bei richtiger Eingabe können die Dateien per 
+\textit{ssh}-Protokoll vom PC auf den {\RPi} übertragen werden.
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+An einem Windows-PC, auf dem die \textit{ssh}-Software \textit{PuTTY} 
+installiert ist, lautet das Kommando im Windows-Konsolenfenster 
+(\cmd{cmd.exe}):\\
+\cmdWin{\textcolor{red}{\textbf{p}}scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}
+\end{bclogo}
+
+\uline{Entpacken der Tarballs:}\\
+\cmdPi{cd audacious\_raspiblaster}\\
+\cmdPi{tar -xvf audacious-3.9.tar.bz2}\\
+\cmdPi{tar -xvf audacious-plugins-3.9.tar.bz2}\\
+\cmdPi{tar -xvf libaudclient-3.5-rc2.tar.bz2}
+
+
+\subsection{libaudclient-3.5-rc2 kompilieren}
+\cmdPi{cd /home/pi/audacious\_raspiblaster/libaudclient-3.5-rc2}\\
+\cmdPi{./configure}
+
+Das Kommando \cmd{./configure} entdeckt, dass einige Programmpakete nicht 
+installiert sind:\\
+\cmdPi{sudo apt install libglib2.0-dev \ \ \ }\comment{wegen Meldung: Cannot find Glib2!\\If you are using binary packages based system, check that you have the corresponding -dev/devel \mbox{packages} installed.}\\
+\cmdPi{sudo apt install libdbus-1-dev \ \ \ \ }\comment{wegen Meldung: No package 'dbus-1' found}\\
+\cmdPi{sudo apt install libdbus-glib-1-dev}\comment{wegen Meldung: No package 'dbus-glib-1' found}\\
+\cmdPi{./configure}\\
+\cmdPi{make}\comment{liefert zwar einen Schwung Warnings, kompiliert es aber dennoch vollständig\dots}\\
+\cmdPi{sudo make install}
+
+
+\subsection{audacious-3.9 kompilieren}
+\cmdPi{cd /home/pi/audacious\_raspiblaster/audacious-3.9}\\
+\cmdPi{leafpad INSTALL}\comment{Anzeige der Installationsanleitung}\\
+\cmdPi{./configure}
+
+Das Kommando \cmd{./configure} entdeckt, dass einige Programmpakete nicht 
+installiert sind:\\
+\cmdPi{sudo apt install libglib2.0-dev \ \ \ \ \ \ \ \ }\comment{wegen Meldung: No package 'glib-2.0' found}\\
+\cmdPi{sudo apt install libgtk2.0 libgtk2.0-dev}\comment{wegen Meldung: No package 'gtk+-2.0' found\\$\rightarrow$Die Installation dieser Pakete dauert auf dem {\RPi} 3B ca. 5 Minuten}
+
+\cmdPi{./configure}\\
+\cmdPi{make -j4}\comment{\cmd{-j4} bewirkt, dass auf dem {\RPi} 3B alle vier Cores verwendet werden}\\
+\cmdPi{sudo make install}
+
+Der folgende Aufruf muss wegen der grafischen Darstellung der GUI direkt auf dem
+{\RPi} erfolgen. Am \textit{ssh}-Terminal auf dem PC ist er nicht möglich!\\
+\cmdPi{audacious}
+%# liefert Fehlermeldung: audacious: error while loading shared libraries: libaudcore.so.5: cannot open shared object file: No such file or directory
+%--> Wieder ein echtes Schmankerl:
+%    Die "shared libraries" werden offenbar in /usr/lib gesucht und es hat nichts
+%    mit dem Inhalt der PATH-Variablen zu tun!
+%    "make install" kopiert die Libraries jedoch nach /usr/local/lib.
+%    Abhilfe: 
+%    \cmdPi{sudo cp  /usr/local/lib/* /usr/lib}
+%
+%\cmdPi{audacious}
+%--> Jetzt erscheint eine versöhnlichere Meldung:
+%    ERROR plugin-init.cc:147 [start_required]: No output plugin found.
+%    (Did you forget to install audacious-plugins?)
+%    Abgebrochen
+ 
+
+\subsection{audacious-plugins-3.9 kompilieren}
+\cmdPi{cd /home/pi/audacious\_raspiblaster/audacious-plugins-3.9}\\
+\cmdPi{./configure}
+
+Das Kommando \cmd{./configure} entdeckt, dass einige Programmpakete nicht 
+installiert sind:\\
+\cmdPi{sudo apt install libxml2-dev}\comment{wegen Meldung: No package 'libxml-2.0' found}
+
+Beim nächsten \cmd{./configure}-Aufruf kommt folgende Warnung:\\
+\textit{checking for libcdio >= 0.70 libcdio\_cdda >= 0.70 libcddb >= 1.2.1... no\\configure: WARNING: audio CD support disabled due to missing dependency: libcdio >= 0.70 libcdio\_cdda >= 0.70 libcddb >= 1.2.1}\\
+\cmdPi{sudo apt install libcdio-dev libcdio-paranoia-dev libcddb-dev}
+
+Ferner fehlt ein Paket für flac (was ich mittlerweile als wichtig empfinde):\\
+\textit{checking for flac >= 1.2.1... no\\configure: error: Missing dependency for FLAC support: flac >= 1.2.1}
+
+\cmdPi{sudo apt install libflac-dev}\\
+\cmdPi{sudo apt install libogg-dev libvorbis-dev}\comment{dto. für die Codecs ogg vorbis}\\
+\cmdPi{sudo apt install libfluidsynth-dev \ \ \ \ \ \ }\comment{dto. für MIDI-Plugin}\\
+\cmdPi{sudo apt install libmpg123-dev \ \ \ \ \ \ \ \ \ \ }\comment{dto. für MP3-Codec}\\
+\cmdPi{sudo apt install libfaad-dev \ \ \ \ \ \ \ \ \ \ \ \ }\comment{dto. für AAC-Codec}\\
+\cmdPi{sudo apt install libwavpack-dev \ \ \ \ \ \ \ \ \ }\comment{dto. für WAV-Codec}\\
+\cmdPi{\# sudo apt install libsamplerate-dev \ \ \ \ }%\comment{Wichtig für das Plugin Speed+Pitch: Das gefällt Alt+Jung!}
+
+\uline{Paket neon27 für  HTTP/HTTPS-Transport installieren:}\\
+\cmdPi{sudo apt install libneon27-dev}
+
+\uline{Hässliche Warnung: ALSA ist auf dem {\Bezeichnung} für die Audiowiedergabe erforderlich!}\\
+\textit{checking for alsa >= 1.0.16... no\\configure: WARNING: ALSA output disabled due to missing dependency: alsa >= 1.0.16}\\
+\cmdPi{sudo apt install libasound2-dev}
+
+\uline{Bibliothek "libavcodec" aus dem FFmpeg-Projekt fehlt:}\\
+\textit{checking for libavcodec >= 53.40.0 libavformat >= 53.25.0 libavutil >= 51.27.0... no\\configure: error: FFmpeg is not installed or too old (required: libavcodec 53.40.0, libavformat 53.25.0, libavutil 51.27.0).  Use --with-ffmpeg=none to disable the ffaudio plugin or --with-ffmpeg=libav to use libav instead.}\\
+\cmdPi{sudo apt install libavcodec-dev libavformat-dev libavutil-dev}}
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Nach der Installation all dieser Pakete fehlt zwar immer noch Etliches. Darauf
+kann aber offenbar verzichtet werden, da es anscheinend nicht essentiell ist.
+\end{bclogo}
+\cmdPi{./configure}
+\smaller{\begin{verbatim}
+Configuration:
+
+  Install path:                           /usr/local/lib/audacious
+  GTK+ support:                           yes
+  Qt support:                             no
+
+  Audio Formats
+  -------------
+  Audio CD:                               yes
+  Free Lossless Audio Codec:              yes
+  Ogg Vorbis:                             yes
+  MIDI (via FluidSynth):                  yes
+  MPEG-1 Layer I/II/III (via mpg123):     yes
+  MPEG-2/4 AAC:                           yes
+  WavPack:                                yes
+
+  External Decoders
+  -----------------
+  FFmpeg/Libav:                           ffmpeg
+  libsndfile:                             no
+
+  Chiptunes
+  ---------
+  AdLib synthesizer (adplug):             yes
+  Commodore 64 audio (sid):               no
+  Game Music Emu (spc, nsf, gbs, etc.):   yes
+  ModPlug:                                no
+  Nintendo DS audio (xsf):                yes
+  PlayStation audio (psf/psf2):           yes
+  Vortex Tracker (vtx):                   yes
+
+  Other Inputs
+  ------------
+  Metronome:                              yes
+  Tone Generator:                         yes
+
+  Effects
+  -------
+  Bauer stereophonic-to-binaural (bs2b):  no
+  Channel Mixer:                          yes
+  Crystalizer:                            yes
+  Dynamic Range Compressor:               yes
+  Echo/Surround:                          yes
+  Extra Stereo:                           yes
+  LADSPA Host (requires GTK+):            yes
+  Sample Rate Converter:                  no
+  Silence Removal:                        yes
+  SoX Resampler:                          no
+  Speed and Pitch:                        no
+  Voice Removal:                          yes
+
+  Outputs
+  -------
+  Advanced Linux Sound Architecture:      yes
+  Jack Audio Connection Kit:              no
+  Open Sound System:                      yes
+  PulseAudio:                             no
+  Simple DirectMedia Layer:               no
+  Sndio:                                  no
+  Win32 waveOut:                          no
+  FileWriter:                             yes
+    -> MP3 encoding:                      no
+    -> Vorbis encoding:                   yes
+    -> FLAC encoding:                     yes
+
+  Playlists
+  ---------
+  Cue sheets:                             no
+  M3U playlists:                          yes
+  Microsoft ASX (legacy):                 yes
+  Microsoft ASX 3.0:                      yes
+  PLS playlists:                          yes
+  XML Sharable Playlist Format (XSPF):    yes
+
+  Transports
+  ----------
+  FTP, SFTP, SMB (via GIO):               yes
+  HTTP/HTTPS (via neon):                  yes
+  MMS (via libmms):                       no
+
+  General
+  -------
+  Alarm (requires GTK+):                  yes
+  Ampache browser (requires Qt):          no
+  Delete Files:                           yes
+  GNOME Shortcuts:                        yes
+  libnotify OSD:                          no
+  Linux Infrared Remote Control (LIRC):   no
+  MPRIS 2 Server:                         yes
+  Scrobbler 2.0:                          no
+  Song Change:                            yes
+
+  GTK+ Support
+  ------------
+  GTK Interface:                          yes
+  Winamp Classic Interface:               yes
+  Album Art:                              yes
+  Blur Scope:                             yes
+  OpenGL Spectrum Analyzer:               no
+  LyricWiki viewer:                       yes
+  Playlist Manager:                       yes
+  Search Tool:                            yes
+  Spectrum Analyzer (2D):                 yes
+  Status Icon:                            yes
+  X11 Global Hotkeys:                     yes
+  X11 On-Screen Display (aosd):           yes
+\end{verbatim}
+}
+%Configuration:\\
+%\\
+%  Install path:                           /usr/local/lib/audacious\\
+%\\
+%  GTK+ support:                           yes\\
+%  Qt support:                             no\\
+%\\
+%  Audio Formats\\
+%  -------------\\
+%  Audio CD:                               yes\\
+%  Free Lossless Audio Codec:              yes\\
+%  Ogg Vorbis:                             yes\\
+%  MIDI (via FluidSynth):                  yes\\
+%  MPEG-1 Layer I/II/III (via mpg123):     yes\\
+%  MPEG-2/4 AAC:                           yes\\
+%  WavPack:                                yes\\
+%\\
+%  External Decoders\\
+%  -----------------\\
+%  FFmpeg/Libav:                           ffmpeg\\
+%  libsndfile:                             no\\
+%\\
+%  Chiptunes\\
+%  ---------\\
+%  AdLib synthesizer (adplug):             yes\\
+%  Commodore 64 audio (sid):               no\\
+%  Game Music Emu (spc, nsf, gbs, etc.):   yes\\
+%  ModPlug:                                no\\
+%  Nintendo DS audio (xsf):                yes\\
+%  PlayStation audio (psf/psf2):           yes\\
+%  Vortex Tracker (vtx):                   yes\\
+%\\
+%  Other Inputs\\
+%  ------------\\
+%  Metronome:                              yes\\
+%  Tone Generator:                         yes\\
+%\\
+%  Effects\\
+%  -------\\
+%  Bauer stereophonic-to-binaural (bs2b):  no\\
+%  Channel Mixer:                          yes\\
+%  Crystalizer:                            yes\\
+%  Dynamic Range Compressor:               yes\\
+%  Echo/Surround:                          yes\\
+%  Extra Stereo:                           yes\\
+%  LADSPA Host (requires GTK+):            yes\\
+%  Sample Rate Converter:                  no\\
+%  Silence Removal:                        yes\\
+%  SoX Resampler:                          no\\
+%  Speed and Pitch:                        yes\\
+%  Voice Removal:                          yes\\
+%\\
+%  Outputs\\
+%  -------\\
+%  Advanced Linux Sound Architecture:      yes\\
+%  Jack Audio Connection Kit:              no\\
+%  Open Sound System:                      yes\\
+%  PulseAudio:                             no\\
+%  Simple DirectMedia Layer:               no\\
+%  Sndio:                                  no\\
+%  Win32 waveOut:                          no\\
+%  FileWriter:                             yes\\
+%    -> MP3 encoding:                      no\\
+%    -> Vorbis encoding:                   yes\\
+%    -> FLAC encoding:                     yes\\
+%\\
+%  Playlists\\
+%  ---------\\
+%  Cue sheets:                             no\\
+%  M3U playlists:                          yes\\
+%  Microsoft ASX (legacy):                 yes\\
+%  Microsoft ASX 3.0:                      yes\\
+%  PLS playlists:                          yes\\
+%  XML Sharable Playlist Format (XSPF):    yes\\
+%\\
+%  Transports\\
+%  ----------\\
+%  FTP, SFTP, SMB (via GIO):               yes\\
+%  HTTP/HTTPS (via neon):                  yes\\
+%  MMS (via libmms):                       no\\
+%\\
+%  General\\
+%  -------\\
+%  Alarm (requires GTK+):                  yes\\
+%  Ampache browser (requires Qt):          no\\
+%  Delete Files:                           yes\\
+%  GNOME Shortcuts:                        yes\\
+%  libnotify OSD:                          no\\
+%  Linux Infrared Remote Control (LIRC):   no\\
+%  MPRIS 2 Server:                         yes\\
+%  Scrobbler 2.0:                          no\\
+%  Song Change:                            yes\\
+%\\
+%  GTK+ Support\\
+%  ------------\\
+%  GTK Interface:                          yes\\
+%  Winamp Classic Interface:               yes\\
+%  Album Art:                              yes\\
+%  Blur Scope:                             yes\\
+%  OpenGL Spectrum Analyzer:               no\\
+%  LyricWiki viewer:                       yes\\
+%  Playlist Manager:                       yes\\
+%  Search Tool:                            yes\\
+%  Spectrum Analyzer (2D):                 yes\\
+%  Status Icon:                            yes\\
+%  X11 Global Hotkeys:                     yes\\
+%  X11 On-Screen Display (aosd):           yes}
+
+\normalsize{}
+\uline{Kompilieren und Installieren der Plugins:}\\
+\cmd{make} mit dem Kommandozeilenparameter \cmd{-j4} bewirkt, dass auf dem 
+{\RPi} 3B alle vier Cores verwendet werden. Dennoch dauert der Kompiliervorgang 
+damit immer noch ca. 5 Minuten:\\
+\cmdPi{make -j4}\comment{\cmd{-j4} bewirkt, dass auf dem {\RPi} 3B alle vier Cores verwendet werden}\\
+\cmdPi{sudo make install}
+
+%Den folgenden Befehl braucht's (mit dem neuen Raspbian Stretch 2018-03-13?) offenbar nicht mehr...
+%\cmdPi{sudo cp -r /usr/local/lib/audacious/pkgconfig /usr/local/lib/audacious/audacious /usr/local/lib/audacious/libaud* /usr/lib}\comment{{\dots}und auch hier die Bibliotheken nach /usr/lib kopieren}\\
+%*** STRIKE! ***
+
+
+\subsection{Code von {\audacious} auf den {\Bezeichnung} anpassen}
+Um die Änderungen von {\autor} einzuspielen, muss lediglich der angepasste 
+Quellcode vom GitHub-Re\-po\-si\-to\-ry 
+\url{https://github.com/schlizbaeda/audacious-raspiblaster} heruntergeladen 
+werden und die drei soeben erstellten \textit{audacious}-Projekte mit den 
+heruntergeladenen Dateien aktualisiert und neu kompiliert werden:
+
+\cmdPi{git clone https://github.com/schlizbaeda/audacious-raspiblaster download}\\
+\cmdPi{cd /home/pi/download}\\
+\cmdPi{cp -r libaudclient-3.5-rc /home/pi/audacious-raspiblaster}\\
+\cmdPi{cp -r audacious-3.9 /home/pi/audacious-raspiblaster}\\
+\cmdPi{cp -r audacious-plugins-3.9 /home/pi/audacious-raspiblaster}
+
+Anschließend in jedem Projektverzeichnis die Projekte mit dem geänderten Code 
+neu erstellen:\\
+\cmdPi{cd /home/pi/audacious\_raspiblaster/libaudclient-3.5-rc2}\comment{dto. für die beiden anderen Teilprojekte}\\
+\cmdPi{make -j4}\\
+\cmdPi{sudo make install}
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Die vom {\autor} geänderten Stellen im Code sind mit dem Kommentar 
+\cmd{schlizbäda} gekennzeichnet. Alle geänderten Dateien können mit dem 
+folgenden Kommando ermittelt werden:\\
+\cmdPi{cd /home/pi/audacious\_raspiblaster}\\
+\cmdPi{grep -r schlizbäda *}\comment{durchsucht rekursiv alle Dateien nach dem Suchbegriff}
+\end{bclogo}
+
+
+\newpage
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Die folgenden Abschnitte brauchen für die Installation von {\audacious} auf dem 
+{\RPi} nicht mehr ausgeführt zu werden! Sie sind hier lediglich enthalten, um 
+die ursprüngliche Vorgehensweise zu beschreiben.
+\end{bclogo}
+
+\subsection{Entwicklungsumgebung \textit{eclipse} für die Codeanalyse und den Debug von \textit{audacious} auf dem PC verwenden}
+Zur Änderung des Sourcecodes von audacity wird ein Laptop mit Linux Mint 18.02
+verwendet. Auch dort kann ein programmtechnischer Zugriff auf ein 
+{\CDROM}-Lauf\-werk ähnlicher Bauart erfolgen...\\
+Möglicherweise muss erst noch das Linux-Paket \cmd{eject} auf dem PC installiert
+werden:\\
+\cmdPC{sudo apt install eject}
+
+\cmdPC{sudo apt install eclipse eclipse-cdt}\comment{Installation mit C-/C++-Plugin}\\
+\cmdPC{eclipse \& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\comment{Start im Hintergrund}
+
+\uline{Bestehendes Projekt in \textit{eclipse} einlesen:}\\
+\menuitem{File$\rightarrow$New$\rightarrow$C++ Project}\\
+Es öffnet sich der Dialog "C++ Project". Dort VORHANDENES Projekt mit folgenden Optionen/Einstellungen einlesen:
+\begin{compactitem}
+\item{Project Name: \cmd{audacious}}
+\item{Use default location: Das Häkchen entfernen!}
+\item{Location: mit \button{Browse} das Verzeichnis wählen: \smaller{\filenam{/home/peter/audacious\_raspiblaster/audacious-3.9}}}
+\item{Project type: Anwählen von \menuitem{Makefile project$\rightarrow$Empty Project}}
+\item{Toolchain: Linux GCC}
+\end{compactitem}
+Einlesen mit der Schaltfläche \button{Finish} ausführen.
+
+\uline{Bedienung des Debuggers:}
+\begin{compactitem}
+\item{Mit Linksdoppelklick auf die ganz linke Leiste setzt/entfernt man einen Breakpoint}
+\item{Start des Debuggers mit dem \textit{Bug}-Symbol (Krabbeltier): Es werden zusätzliche Ansichten geöffnet!}
+\item{F5: Einzelschritt mit Sprung in Unterblöcke}
+\item{F6: Einzelschritt komplett}
+\item{F7: aktuellen Block verlassen}
+\item{F8: Fortführen bis zum nächsten Breakpoint (oder Programmende)}
+\end{compactitem}
+
+
+\subsection{Ändern/Anpassen des Sourcecodes -- Teil 1: Einbinden der \textit{eject}-Funktionalität}
+Neue Dateien eject.cc und eject.h in .../audacious-3.9/src/libaudcore einbinden:
+\begin{compactitem}
+\item{\filenam{\dots/audacious-3.9/src/libaudcore/Makefile}\\
+      Einfügen der neuen Quellcodedatei im Abschnitt \cmd{SRCS}\\
+      \cmd{SRCS}\\
+      \editor{eject.cc}}
+\item{in \filenam{\small{\dots/audacious-3.9/src/libaudcore}} die Dateien \filenam{eject.h} und \filenam{eject.cc} anlegen}
+\item{\filenam{\small{\dots/audacious-3.9/src/libaudcore/eject.cc}}: Quellcode anpassen\\
+      Mordsgeschiss bei den \cmd{\#include}s, \cmd{\#define}s und Funktionsprototypen (siehe Quellcode)}
+\item{\filenam{\small{\dots/audacious-3.9/src/libaudcore/tests/drct.h}}: Funktionsprototypen aufgenommen\\
+      \cmd{\smaller{void aud\_drct\_eject (); /* schlizbäda: click event handler of eject button */}}}
+\item{\filenam{\small{\dots/audacious-plugins-3.9/src/gtkui/ui\_gtk.cc}}: ToolStripItem "{eject}"\ aufgenommen:\\
+      \cmd{\smaller{toolbar\_button\_add (toolbar, aud\_drct\_eject, "media-eject"); /* schlizbäda: added "{eject}"\ button */}}}
+\item{\filenam{\small{\dots/audacious-plugins-3.9/src/gtkui/menus.cc}}: Menüpunkt "{eject}"\ aufgenommen\\
+      \smaller{
+      \cmd{static const AudguiMenuItem playback\_items[] = \{ /* schlizbäda: added "{eject}"\ menu item */}\\
+      \editor{MenuCommand (N\_("Eject"), "media-eject", NONE, aud\_drct\_eject),}\\
+      \stdout{\}}}}
+\end{compactitem}
+
+
+\subsection{Ändern/Anpassen des Sourcecodes -- Teil 2: Besonderheiten am {\RPi} \bzw {\Bezeichnung}: eject-Sperre}
+Sperren der EJECT-Taste des {\CDROM}-Laufwerks über GPIO4 mittels der GPIO-Bibliothek \textit{wiringPi}:\\
+Neue Routinen in \filenam{\dots/audacious-3.9/src/libaudcore/eject.cc}:\\
+\cmd{int lock\_eject\_pushbutton()}\\
+\cmd{int unlock\_eject\_pushbutton()}\\
+\cmd{int lock\_eject\_raspberrypi(bool lock) \smaller{/* wird compiliert, wenn der \#define RASPBERRYPI definiert ist */}}
+  
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Hier ist es wichtig, \textit{wiringPi} zu verwenden und nicht \textit{pigpio}, 
+da diese Bibliothek offenbar \textbf{alle} GPIOs des {\RPi} belegt und dabei den
+I2S-Bus für die Audioausgabe über den HifiBerry MiniAMP "`ausbremst"'\dots
+\end{bclogo}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{CD-ROM-Laufwerk am RPi einbinden}
+%\subsection{Erkennen des externen CD-ROM-Laufwerks am USB}
+%\subsection{Linux-Paket "eject" installieren}
+%%\subsection{audacious kompilieren (damit man den Quellcode anpassen kann)}
+%
+%
+%\section{audacious kompilieren (damit man den Quellcode anpassen kann)}
+%\subsection{Download des aktuellen Quellcodes von https://audacious-media-player.org/download}
+%\subsection{libaudclient-3.5-rc2 kompilieren}
+%\subsection{audacious-3.9 kompilieren}
+%\subsection{audacious-plugins-3.9 kompilieren}
+%\subsection{ECLIPSE auf dem PC für Debug verwenden}
+%\subsection{Ändern/Anpassen des Sourcecodes -- Teil 1: eject-Funktionalität einbinden}
+%\subsection{Ändern/Anpassen des Sourcecodes -- Teil 2: RPi-/Raspiblaster-Besonderheiten}
+%
+%
+%\section{Fehlschläge}
+%\subsection{Python-Script mit mplayer-Aufrufen}
+%\subsection{alsaplayer}
+%\subsection{mpd}
+% nicht durchexerziert
+%\subsection{KSCD}
+%desaströs!
+%\subsection{\dots}
+%
