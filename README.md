@@ -4,7 +4,7 @@ Multilingual LaTeX manual for schlizbäda's raspiblaster
 download:
 `git clone https://github.com/schlizbaeda/raspiblaster-manual`
 
-compile:
+compile by using the [`LaTeX`](https://www.latex-project.org/) project:
 `pdflatex raspiblaster_en`
 
 
