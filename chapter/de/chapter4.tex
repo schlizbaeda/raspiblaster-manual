@@ -1,14 +1,528 @@
 % chapter4.tex -- de (German)
-\chapter{Hardwarebasteleien}
+\chapter{CDs rippen mit \textit{abcde}}
 
-TODO: \todo{Dieses Kapitel wurde noch nicht erstellt!}
-Dieses Kapitel wurde als eine Art "`Schmierzettel"' aufgenommen.
+Da der {\Bezeichnung} auf dem {\RPi} 3B basiert, handelt es sich bei diesem
+Gerät um einen vollständigen Computer, auf dem das Betriebssystem 
+\textit{Raspbian} läuft. Dies ist die von der Foundation gewartete offizielle
+Linux-Distribution für den {\RPi}, die von \textit{Debian GNU/Linux} abgeleitet
+wurde. Ein solcher Computer kann prinzipiell mit zusätzlicher Software erweitert
+werden.\\
+Dieses Kapitel beschreibt die Installation und Anwendung des Programms
+\textit{abcde}\\("`\textbf{A} \textbf{B}etter \textbf{CD} \textbf{E}ncoder"'),
+ein CD-Ripper für die Kommandozeile.
 
-\section{\RPi3}
-\section{\raspidisplay}
-\section{HifiBerry MiniAMP}
-\section{LG \LGdrive}
-\section{S-USV -- Akkubetrieb?}
-\section{Spannungsversorgung}
-\section{eject-Sperre über GPIO4}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+\textit{Rippen} bezeichnet das Kopieren von einer Datenquelle auf ein anderes
+Speichermedium wie eine Festplatte.\\
+Die rechtliche Grundlage, von einer urheberrechtlich geschützten Datenquelle 
+eine Kopie mit Hilfe eines Rip-Programms zu erstellen, ist weltweit uneinheitlich
+geregelt. Im europäischen Raum gilt vielfach, dass für rein private Zwecke
+Kopien in eingeschränktem Rahmen einer sogenannten \textit{Privatkopie} erlaubt
+sind.
+\end{bclogo}
 
+
+\section{\textit{abcde} installieren und anpassen}
+Mit \textit{abcde} können Audio-CDs ausgelesen und die Tracks anschließend in
+die Formate \textit{flac}, \textit{m4a}, \textit{mp3}, \textit{mpc},
+\textit{ogg}, \textit{opus}, \textit{mka}, \textit{spx}, \textit{vorbis},
+\textit{wav}, \textit{wv}, \textit{ape}, \textit{aiff} (Stand Programmversion
+2.8.x) kodiert werden. Metadaten wie Interpret, Titel, Album usw. können von
+den Datenbankservern \textit{Free DB (CDDB)} oder \textit{musicbrainz} 
+heruntergeladen und bearbeitet werden.\\
+Im Gegensatz zu vielen anderen CD-Ripper-Pro\-gram\-men ist \textit{abcde} 
+eine kommandozeilenbasierende Software, von daher relativ ressourcenschonend
+und somit auch für den {\RPi} geeignet. Die meisten Linux-Distri\-bu\-tionen 
+enthalten \textit{abcde} in ihrem Paketverwaltungssystem und können deshalb 
+einfach installiert werden. Der Quellcode von abcde befindet sich unter
+\url{https://abcde.einval.com/download/}
+
+\subsection{Installation von \textit{abcde} über die Raspbian-Paketverwaltung \textit{apt}}
+Diese Installationsanleitung funktioniert nicht nur auf dem {\RPi}, sondern auf
+allen Rechnern, auf denen eine auf \textit{Debian} basierende Linux-Distribution
+installiert ist, wie \zB \textit{ubuntu} oder \textit{Linux Mint}.
+
+\cmdPi{sudo apt-get install abcde \ \ \ }\comment{Hauptprogramm und notwendige Pakete}\\
+\cmdPi{}\comment{Installation einer Auswahl gängiger Audiocodecs:}\\
+\cmdPi{sudo apt-get install flac lame mkcue mp3gain speex vorbis-tools vorbisgain}\\
+\cmdPi{sudo apt-get install id3 id3v2}\comment{ID3-Tags für MP3-Dateien (empfehlenswert)}\\
+\cmdPi{sudo apt-get install glyrc \ \ \ }\comment{fehlt zumindest am PC bei Linux Mint 18.2}
+
+\subsection{Anpassung der Konfigurationsdatei \filenam{/etc/abcde.conf}}
+\cmdPi{sudo nano /etc/abcde.conf}\\
+\verb|# abcde.conf -- Bearbeitete Version von schlizbäda für den Raspiblaster|\\
+\verb|#|\\
+\verb|# Diese Datei enthält im Original sehr viele Kommentarzeilen, die mit \#|\\
+\verb|# beginnen und Erläuterungen zu den einzelnen Optionen enthalten.|\\
+\verb|# Hier werden aus Platzgründen nur die effektiven Zeilen aufgelistet:|\\
+\verb|CDDBMETHOD=cddb,cdtext|\\
+\verb|HELLOINFO="`whoami`@`hostname`"|\\
+\verb|ACTIONS=default,playlist,getalbumart|\\
+\verb|OUTPUTDIR=/home/`whoami`/Music|\\
+\verb|OUTPUTTYPE=flac|\\
+\verb|OUTPUTFORMAT='${ARTISTFILE}/${ALBUMFILE}/${TRACKNUM}_${TRACKFILE}'|\\
+\verb|VAOUTPUTFORMAT='Various_Artists/${ALBUMFILE}/${TRACKNUM}_${ARTISTFILE}__${TRACKFILE}'|\\
+\verb|PLAYLISTFORMAT='${ARTISTFILE}/${ALBUMFILE}/${ARTISTFILE}__${ALBUMFILE}.${OUTPUT}.m3u'|\\
+\verb|VAPLAYLISTFORMAT='Various_Artists/${ALBUMFILE}/${ALBUMFILE}.${OUTPUT}.m3u'|\\
+\verb|EJECTCD=y|
+
+Auf eine Beschreibung der Optionen in den einzelnen Zeilen wird an dieser Stelle
+verzichtet. Die bei der Installation angelegte Originaldatei 
+\filenam{/etc/abcde.conf} enthält zu jeder Option erklärende Kommentare.
+Alternativ kann auch die mit dieser Bedienungsanleitung heruntergeladene Version
+von \filenam{abcde.conf} nach \filenam{/etc} kopiert werden:\\
+\cmdPi{sudo cp abcde.conf /etc}\comment{Alternative zum Editieren der Konfigurationsatei}\\
+
+\section{Die erste CD mit \textit{abcde} rippen}
+\label{sect:rip}
+Um eine CD zu rippen, legt man die CD zunächst ins \CDROM-Laufwerk ein und
+\textbf{wartet, bis das Laufwerk die CD erkannt hat.} Jetzt gibt man einfach 
+\texttt{abcde} in das Terminalfenster ein:\\
+\cmdPi{abcde}\comment{Rippen der eingelegten CD}
+
+Alle gewünschten Optionen wurden bereits in der Datei
+\filenam{/etc/abcde.conf} vorgenommen.
+
+
+\newpage
+Nach dem Programmstart wird das Inhaltsverzeichnis der CD eingelesen. Bei
+vorhandenem Internetzugang wird versucht, die Metadaten für die CD zu ermitteln
+und anzuzeigen:
+
+\footnotesize{\color{gray}
+\verb|Grabbing entire CD - tracks: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15|\\
+\color{black}\verb|Which entry would you like abcde to use (0 for none)? [0-2]: |\color{red}\verb|1|\\
+\color{gray}
+\verb|Selected: #1 (Saga / The Very Best Of...)|\\
+\verb|---- Saga / The Very Best Of... ----|\\
+\verb|Year: 1994|\\
+\verb|Genre: Rock|\\
+\verb|1: Wind Him Up|\\
+\verb|2: (You Were) Never Alone (edited version)|\\
+\verb|3: Wildest Dreams|\\
+\verb|4: Humble Stance|\\
+\verb|5: You and the Night|\\
+\verb|6: The Flyer|\\
+\verb|7: The Security of Illusion|\\
+\verb|8: Why Not (single edit)|\\
+\verb|9: How Long|\\
+\verb|10: Only Time Will Tell|\\
+\verb|11: Starting All Over|\\
+\verb|12: What Do I Know|\\
+\verb|13: Help Me Out|\\
+\verb|14: Say Goodbye to Hollywood|\\
+\verb|15: On the Loose|\\
+\color{black}\verb|Edit selected CDDB data [y/N]? |\color{red}\verb|n|\\
+\color{black}\verb|Is the CD multi-artist [y/N]? |\color{red}\verb|n|\\
+\color{gray}
+\verb|Creating playlist...|\\
+\verb|- Artist   : saga|\\
+\verb|- Album    : the_very_best_of|\\
+\verb|- Language : en|\\
+\verb|- Type     : cover|\\
+} % end of block \footnotesize{
+
+\normalsize{Nun wird versucht, im Internet ein Coverbild der CD zu finden:}
+
+\footnotesize{\color{gray}
+\verb|---- Triggering: musictree local coverartarchive |\\
+\verb|#[00/01] Checking image-types: [- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|- DLError: Couldn't resolve host name [6]|\\
+\verb|!!!!!!!] (-7 item(s) less)|\\
+\verb|---- Triggering: lastfm jamendo musicbrainz |\\
+\verb|---- Triggering: slothradio lyricswiki discogs |\\
+\verb|#[00/01] Checking image-types: [.] (-0 item(s) less)|\\
+\verb|---- |\\
+\verb||\\
+\verb|///// ITEM #1 /////|\\
+\verb|WRITE to '/home/pi/abcde.f010540f/cover.jpg'|\\
+\verb|FROM: <https://images-na.ssl-images-amazon.com/images/I/51pvlJE0euL.jpg>|\\
+\verb|PROV: slothradio|\\
+\verb|SIZE: 51017 Bytes|\\
+\verb|MSUM: 73c8ac08904a48b69be23513bbd9e04c|\\
+\verb|TYPE: cover|\\
+\verb|SAFE: No|\\
+\verb|RATE: 0|\\
+\verb|STMP: 0.000000|\\
+\verb|FRMT: jpeg|\\
+\verb|DATA: <not printable>|\\
+\verb||\\
+\verb|////////////////////|\\
+\verb|# => 1 item in total.|\\
+\verb|/home/pi/abcde.f010540f/cover.jpg JPEG 500x500 500x500+0+0 8-bit sRGB 51KB 0.000u 0:00.000|\\
+\color{black}\verb|Do you want to enter URL or local path for the album art [y/N]? |\color{red}\verb|n|\\
+} % end of block \footnotesize{
+
+\normalsize{Einlesen der einzelnen Titel der CD:}
+
+\footnotesize{\color{gray}
+\verb|Grabbing track 01: Wind Him Up...|\\
+\verb|cdparanoia III release 10.2 (September 11, 2008)|\\
+\verb||\\
+\verb|Ripping from sector      32 (track  1 [0:00.00])|\\
+\verb|	  to sector   26131 (track  1 [5:47.74])|\\
+\verb||\\
+\verb|outputting to /home/pi/abcde.f010540f/track01.wav|\\
+\verb||\\
+\verb+ (== PROGRESS == [                              | 026131 00 ] == :^D * ==)   +\\
+\verb||\\
+\verb|Done.|\\
+\verb||\\
+\verb||\\
+\verb|Grabbing track 02: (You Were) Never Alone (edited version)...|\\
+\verb|cdparanoia III release 10.2 (September 11, 2008)|\\
+\verb||\\
+\verb|Ripping from sector   26132 (track  2 [0:00.00])|\\
+\verb|	  to sector   44626 (track  2 [4:06.44])|\\
+\verb||\\
+\verb|outputting to /home/pi/abcde.f010540f/track02.wav|\\
+\verb||\\
+\verb+ (== PROGRESS == [                              | 044626 00 ] == :^D * ==)   +\\
+\verb||\\
+\verb|Done.|\\
+\verb||\\
+\verb||\\
+\verb|Grabbing track 03: Wildest Dreams...|\\
+} % end of block \footnotesize{
+\normalsize{ \ \ \vdots \ \ (Einlesen aller übrigen Titel der CD\dots)}\\
+\footnotesize{\color{gray}
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector   44627 (track  3 [0:00.00])
+%	  to sector   67001 (track  3 [4:58.24])
+%
+%outputting to /home/pi/abcde.f010540f/track03.wav
+%
+% (== PROGRESS == [                              | 067001 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 04: Humble Stance...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector   67002 (track  4 [0:00.00])
+%	  to sector   92731 (track  4 [5:43.04])
+%
+%outputting to /home/pi/abcde.f010540f/track04.wav
+%
+% (== PROGRESS == [                              | 092731 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 05: You and the Night...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector   92732 (track  5 [0:00.00])
+%	  to sector  116441 (track  5 [5:16.09])
+%
+%outputting to /home/pi/abcde.f010540f/track05.wav
+%
+% (== PROGRESS == [                              | 116441 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 06: The Flyer...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  116442 (track  6 [0:00.00])
+%	  to sector  133091 (track  6 [3:41.74])
+%
+%outputting to /home/pi/abcde.f010540f/track06.wav
+%
+% (== PROGRESS == [                              | 133091 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 07: The Security of Illusion...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  133092 (track  7 [0:00.00])
+%	  to sector  158746 (track  7 [5:42.04])
+%
+%outputting to /home/pi/abcde.f010540f/track07.wav
+%
+% (== PROGRESS == [                              | 158746 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 08: Why Not (single edit)...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  158747 (track  8 [0:00.00])
+%	  to sector  176016 (track  8 [3:50.19])
+%
+%outputting to /home/pi/abcde.f010540f/track08.wav
+%
+% (== PROGRESS == [                              | 176016 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 09: How Long...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  176017 (track  9 [0:00.00])
+%	  to sector  193831 (track  9 [3:57.39])
+%
+%outputting to /home/pi/abcde.f010540f/track09.wav
+%
+% (== PROGRESS == [                              | 193831 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 10: Only Time Will Tell...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  193832 (track 10 [0:00.00])
+%	  to sector  213501 (track 10 [4:22.19])
+%
+%outputting to /home/pi/abcde.f010540f/track10.wav
+%
+% (== PROGRESS == [                              | 213501 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 11: Starting All Over...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  213502 (track 11 [0:00.00])
+%	  to sector  231581 (track 11 [4:01.04])
+%
+%outputting to /home/pi/abcde.f010540f/track11.wav
+%
+% (== PROGRESS == [                              | 231581 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 12: What Do I Know...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  231582 (track 12 [0:00.00])
+%	  to sector  247881 (track 12 [3:37.24])
+%
+%outputting to /home/pi/abcde.f010540f/track12.wav
+%
+% (== PROGRESS == [                              | 247881 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 13: Help Me Out...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  247882 (track 13 [0:00.00])
+%	  to sector  274359 (track 13 [5:53.02])
+%
+%outputting to /home/pi/abcde.f010540f/track13.wav
+%
+% (== PROGRESS == [                              | 274359 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+%Grabbing track 14: Say Goodbye to Hollywood...
+%cdparanoia III release 10.2 (September 11, 2008)
+%
+%Ripping from sector  274360 (track 14 [0:00.00])
+%	  to sector  294759 (track 14 [4:31.74])
+%
+%outputting to /home/pi/abcde.f010540f/track14.wav
+%
+% (== PROGRESS == [                              | 294759 00 ] == :^D * ==)   
+%
+%Done.
+%
+%
+\verb|Grabbing track 15: On the Loose...|\\
+\verb|cdparanoia III release 10.2 (September 11, 2008)|\\
+\verb||\\
+\verb|Ripping from sector  294760 (track 15 [0:00.00])|\\
+\verb|	  to sector  313556 (track 15 [4:10.46])|\\
+\verb||\\
+\verb|outputting to /home/pi/abcde.f010540f/track15.wav|\\
+\verb||\\
+\verb+ (== PROGRESS == [                              | 313556 00 ] == :^D * ==)   +\\
+\verb||\\
+\verb|Done.|\\
+\verb||\\
+\verb||\\
+\verb|Encoding track 15 of 15: On the Loose...|\\
+\verb|Tagging track 15 of 15: On the Loose...|\\
+\verb|Finished.|\\
+} % end of block \footnotesize{
+
+\normalsize{Die von der CD gerippten Musikstücke werden nach folgendem Schema in
+das Verzeichnis \filenam{/home/\textit{<Benutzername>}/Music} kopiert:\\
+\filenam{/home/\textit{<Benutzername>}/Music/\textit{<Interpret>}/\textit{<Album>}}\\
+\filenam{/home/\textit{<Benutzername>}/Music/Various\_Artists/\textit{<Album>}}
+
+Die soeben von der CD "`{Saga -- The Very Best Of...}"' gerippten Musiktitel
+werden also im Verzeichnis \filenam{/home/pi/Music/Saga/The\_Very\_Best\_Of...}
+abgelegt:
+
+\cmdPi{ls -l /home/pi/Music/Saga/The\_Very\_Best\_Of...}\\
+\stdout{total 482504}\\
+\stdout{-rw-r--r-- 1 pi pi 41920468 Aug 11 12:58 01\_Wind\_Him\_Up.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 30166196 Aug 11 12:58 02\_(You\_Were)\_Never\_Alone\_(edited\_version).flac}\\
+\stdout{-rw-r--r-- 1 pi pi 35710370 Aug 11 12:59 03\_Wildest\_Dreams.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 36649779 Aug 11 12:59 04\_Humble\_Stance.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 34147496 Aug 11 13:00 05\_You\_and\_the\_Night.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 28216453 Aug 11 13:00 06\_The\_Flyer.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 39326472 Aug 11 13:01 07\_The\_Security\_of\_Illusion.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 30377630 Aug 11 13:02 08\_Why\_Not\_(single\_edit).flac}\\
+\stdout{-rw-r--r-- 1 pi pi 26811872 Aug 11 13:02 09\_How\_Long.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 31983909 Aug 11 13:03 10\_Only\_Time\_Will\_Tell.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 26682581 Aug 11 13:03 11\_Starting\_All\_Over.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 26878160 Aug 11 13:03 12\_What\_Do\_I\_Know.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 42271986 Aug 11 13:04 13\_Help\_Me\_Out.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 31089476 Aug 11 13:04 14\_Say\_Goodbye\_to\_Hollywood.flac}\\
+\stdout{-rw-r--r-- 1 pi pi 31753532 Aug 11 13:04 15\_On\_the\_Loose.flac}\\
+\stdout{-rw-r--r-- 1 pi pi \ \ \ 51017 Aug 11 12:57 cover.jpg}\\
+\stdout{-rw-r--r-- 1 pi pi \ \ \ \ \ 388 Aug 11 12:56 Saga\_\_The\_Very\_Best\_Of....flac.m3u}
+
+Neben den Musikdateien der 15 Titel der CD, die in das verlustfreie flac-Format
+gewandelt wurden, befindet sich dort eine \textit{m3u}-Datei mit allen Liedern
+der CD. Diese Datei kann von vielen Audio-Wiedergabeprogrammen sowohl unter
+Linux als auch unter Windows verarbeitet werden.\\
+Das von \textit{abcde} ermittelte Coverbild wird grundsätzlich unter dem 
+Dateinamen \filenam{cover.jpg} abgelegt, da auch dies von vielen Programmen
+erkannt wird.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.33\textwidth]{Saga.jpg}
+\caption{von \textit{abcde} ermitteltes Coverbild zur gerippten CD}
+\label{fig:coverpicture}
+\end{figure}
+
+
+\subsection*{Ausgabe von Hilfetexten zur Software \textit{abcde}}
+In der Kommandozeile kann jederzeit eine kurze Anleitung ausgegeben werden:
+
+\cmdPi{abcde -h \ \ \ \ \ \ }\comment{kurze Auflistung der möglichen Kommandozeilenparameter}\\
+\cmdPi{abcde -h | less}\comment{obige Ausgabe mit Scrollmöglichkeit}\\
+\cmdPi{man abcde \ \ \ \ \ }\comment{Ausführliche Hilfe aus den Linux Manual Pages}
+
+
+\section{Fehlerbehandlung}
+Die Bearbeitung von \textit{abcde} kann jederzeit durch Drücken der 
+Tastenkombination \textit{Ctrl-C} abgebrochen werden, weil beispielsweise noch
+ein Schreibfehler in den Datenbankeinträgen aus dem Internet entdeckt wurde.
+Neben den Zieldaten werden im Home-Verzeichnis des Anwenders in einem 
+Unterverzeichnis Zwischendaten abgelegt:
+
+\cmdPi{ls -l ~}\comment{Anzeige der Dateien im Homeverzeichnis}\\
+\stdout{total 1543}\\
+\stdout{drwxrwxr-x 4 pi pi \ \ \ 4096 Aug \ 9 22:01 abcde-2.9}\\
+\stdout{drwxr-xr-x 2 pi pi \ \ \ 4096 Aug 11 15:32 abcde.f010540f}\\
+\stdout{drwxr-xr-x 2 pi pi \ \ \ 4096 Aug 11 14:40 abcde.880b440a}\\
+\stdout{drwxr-xr-x 6 pi pi \ \ \ 4096 Aug 11 15:42 Music}\\
+\stdout{-rwxr-xr-x 6 pi pi \ \ \ \textit{<einige andere Dateien>}}
+
+Nach erfolgreichem vollständigen Einlesen werden diese Hilfsverzeichnisse wieder
+gelöscht. Bei Abbrüchen bleiben sie jedoch bestehen. Wird \textit{abcde} jetzt 
+erneut gestartet, so sucht die Software zuerst ein eventuell vorhandenes 
+Hilfsverzeichnis. Wird sie fündig, so liest sie daraus die Daten aus und lässt
+keine Bearbeitung durch den Benutzer mehr zu, da dies ja bereits geschah.\\
+Um dieses Verhalten zu umgehen, werden vor dem Aufruf von \textit{abcde} alle
+diese Hilfsverzeichnisse manuell gelöscht:
+
+\cmdPi{rm -r abcde.*}\comment{Löschen aller Hilfsverzeichnisse}\\
+\cmdPi{abcde \ \ \ \ \ \ \ }\comment{Erneuter Programmaufruf}
+
+\begin{bclogo}[arrondi = 0.2, logo = \bcinfo, ombre = true, epOmbre = 0.25, couleurOmbre = black!30,blur]{Achtung} 
+Beim Löschkommando ist darauf zu achten, als Suchmaske 
+\filenam{abcde\textcolor{red}{\textbf{.}}*} (mit Punkt) einzugeben, da mit 
+\filenam{abcde*} (ohne Punkt!) \textbf{alle} Dateien und Verzeichnisse gelöscht
+werden, die mit \mbox{"`abcde"'} beginnen!\\
+Konkret würde im obigen Beispiel auch das Verzeichnis 
+\filenam{/home/pi/\textcolor{red}{abcde}-2.9} gelöscht werden.
+\end{bclogo}
+
+
+\section{Suche von Coverbildern}
+Bei manchen CDs sind in den Internetdatenbanken keine Coverbilder und auch keine
+Titelnamen hinterlegt. Die Metadaten müssen dann per Hand eingegeben werden!
+Coverbilder können in diesem Fall mit dem Browser über eine Suchmaschine Ihres
+Vertrauens gesucht werden.\\
+Am {\RPi} ist der installierte Chromium-Browser insbesondere bei der Suche nach
+Bildern relativ langsam. Das beim {\Bezeichnung} verwendete 7-Zoll-Display 
+ermöglicht mit seiner relativ geringen Auflösung von 800 x 480 Pixeln zudem
+keine besonders übersichtliche Ausgabe der Suchergebnisse. Dies kann nun entweder
+in Kauf genommen werden, oder die Suche erfolgt auf einem schnelleren Computer
+(PC, Laptop).
+
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Bei paralleler Verwendung eines Laptops ist es sinnvoll, den {\RPi} über
+\textit{ssh} fernzusteuern und dabei die Grafikausgabe des X11-Desktops auf den
+Remote-Rechner umzulenken. Dies ist beim Kommando \filenam{ssh} mit dem 
+Kommandozeilenparameter \filenam{-X} möglich.
+\end{bclogo}
+
+\cmdPC{ssh -X pi@raspiblaster}\comment{Grafikausgabe vom {\RPi} auf dem PC}
+
+Einerseits werden damit gefundene Coverbilder gleich auf dem Bildschirm des PCs
+angezeigt. Andererseits können bei fehlenden Coverbildern in der 
+Internet-Datenbank mit dem PC-Browser schneller Ersatzbilder gesucht werden. 
+Die (oftmals kryptische) URL der Bilder kann dann mit \textit{copy-paste} ohne
+Tippfehler in das ssh-Fenster des {\RPi} kopiert werden.
+
+
+\section{Benchmark}
+Bei den obigen Nachteilen stellt sich unweigerlich die Frage, warum führt man 
+\textit{abcde} nicht gleich auf dem PC aus?\\
+Dafür gibt es (mindestens) zwei Gründe:
+\begin{compactitem}
+\item{Auf dem PC ist Windows installiert und nicht Linux. Der Anwender kann,
+      darf oder will Linux auf diesem PC nicht zusätzlich installieren.\\
+      \textit{abcde} kann jedoch nur unter Linux ausgeführt werden.}
+\item{Auf dem PC/Laptop läuft \textit{abcde} (deutlich) langsamer als auf
+      dem \RPi.}
+\end{compactitem}
+
+\subsection*{Wie bitte?}
+Ein {\RPi} ist doch im Vergleich zu einem selbst in die Jahre gekommenen PC
+relativ langsam! Die Geschwindigkeit beim Rippen einer CD hängt jedoch in erster
+Linie von der Lesegeschwindigkeit des \CDROM-Laufwerks ab und kaum von der
+Geschwindigkeit des Prozessors (CPU). Daher ist es möglich, einen {\Bezeichnung}
+zu haben, der diese spezielle Aufgabe letztlich schneller durchführt als ein
+PC.
+
+Die in Abschnitt \ref{sect:rip} genannte Beispiel-CD "`{SAGA - The Very Best
+Of...}"' (15 Titel mit einer Gesamtspielzeit von 1:09:37) wurde mit \textit{abcde}
+auf einem {\Bezeichnung} mit einem relativ neuen 5,25 Zoll bluray-Laufwerk 
+von 2017 gerippt sowie auf drei verschiedenen Laptops mit Linux Mint:
+
+\begin{table}[!h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Rechner}		&	\textbf{Typ/Laufwerk}	&	\textbf{Jahr}	&	\textbf{Dauer}	&	\textbf{Betriebssystem}\\
+\hline
+		{\RPi} 3B		&	LG BH16NS55				&	2017			&	\ 8,5 Minuten	&	Raspbian Stretch\\
+		Lenovo			&	Thinkpad T500			&	2010			&	11,5 Minuten	&	Linux Mint 19\\ 
+		Toshiba			&	Satellite L670D-13D		&	2012			&	\ 9,5 Minuten	&	Linux Mint 18.2\\ 
+		Samsung			&	NP350E7C-S0GDE			&	2013			&	14(!) Minuten	&	Linux Mint 18.2\\ 
+\hline
+\end{tabular}
+\vspace{0.5cm}
+\caption{Dauer zum Rippen der gleichen CD auf unterschiedlichen Geräten}
+\end{table}
+
+Dies zeigt, dass ein {\RPi} bei Verwendung vernünftiger Peripherie durchaus
+konkurrenzfähig ist.
+
+Viel Spaß beim Rippen von CDs unter Linux mit \textit{abcde}!

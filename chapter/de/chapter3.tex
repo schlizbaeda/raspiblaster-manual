@@ -86,7 +86,7 @@ IP-Adresse und die Benutzerkennung \cmd{pi} samt Passwort (siehe Abbildungen
 \cmdPi{sudo apt update }\comment{braucht's manchmal, z.B. beim verwendeten Raspbian-Image vom 13.03.2018}\\
 
 \subsection*{Image auf ca. 6,8GB verkleinern}
-TODO:\todo{entweder mein Verfahren oder \cmd{pishrink} von @framp einbinden}
+TODO:\todo{entweder mein Verfahren oder \cmd{pishrink} einbinden}
 
 Dieser Schritt ist nicht zwingend notwendig, allerdings bietet er zwei Vorteile:
 \begin{compactitem}
@@ -149,7 +149,7 @@ ALSA-Einstellungen enthält und die Einstellungen von
 \end{bclogo}
 \cmdPi{rm /home/pi/.asoundrc}
 
-\uline{Inhalt von \filenam{/etc/asound.conf}:}\\
+\uline{Ursprünglicher Inhalt von \filenam{/etc/asound.conf}:}\\
 \cmdPi{cat /etc/asound.conf}\\
 \stdout{pcm.!default \{}\\
 \stdout{\ \ type hw card 0}\\
@@ -168,47 +168,90 @@ ALSA-Einstellungen enthält und die Einstellungen von
 \subsection{ALSA für Lautstärkeregelung aufbohren}
 \uline{erweiterter Inhalt von \filenam{/etc/asound.conf}:}\\
 \cmdPi{cat /etc/asound.conf}\\
-\stdout{\# Einstellungen von @smutbert aus dem deutschen RaspberryPi-Forum:}\\
-\stdout{\# \url{https://forum-raspberrypi.de/user/21740-smutbert/}}\\
-\stdout{pcm.dmixer \{}\\
-\stdout{    type dmix}\\
-\stdout{    ipc\_key 1236}\\
-\stdout{    slave.pcm "hw:sndrpihifiberry"}\\
-\stdout{\}}\\
-\stdout{pcm.softvolume \{}\\
-\stdout{    type softvol}\\
-\stdout{    slave.pcm "dmixer"}\\
-\stdout{    control.name "Master"}\\
-\stdout{    control.card sndrpihifiberry}\\
-\stdout{\}}\\
-\stdout{pcm.!default \{}\\
-\stdout{    type       plug}\\
-\stdout{    slave.pcm  "softvolume"}\\
-\stdout{\}}
+%\stdout{\# Einstellungen von @smutbert aus dem deutschen RaspberryPi-Forum:}\\
+%\stdout{\# \url{https://forum-raspberrypi.de/user/21740-smutbert/}}\\
+%\stdout{pcm.dmixer \{}\\
+%\stdout{    type dmix}\\
+%\stdout{    ipc\_key 1236}\\
+%\stdout{    slave.pcm "hw:sndrpihifiberry"}\\
+%\stdout{\}}\\
+%\stdout{pcm.softvolume \{}\\
+%\stdout{    type softvol}\\
+%\stdout{    slave.pcm "dmixer"}\\
+%\stdout{    control.name "Master"}\\
+%\stdout{    control.card sndrpihifiberry}\\
+%\stdout{\}}\\
+%\stdout{pcm.!default \{}\\
+%\stdout{    type       plug}\\
+%\stdout{    slave.pcm  "{softvolume}"}\\
+%\stdout{\}}
+\verb|# Einstellungen von @smutbert aus dem deutschen RaspberryPi-Forum:|\\
+\verb|# https://forum-raspberrypi.de/user/21740-smutbert/|\\
+\verb|pcm.dmixer {|\\
+\verb|    type dmix|\\
+\verb|    ipc_key 1236|\\
+\verb|    slave.pcm "hw:sndrpihifiberry"|\\
+\verb|}|\\
+\verb|pcm.softvolume {|\\
+\verb|    type softvol|\\
+\verb|    slave.pcm "dmixer"|\\
+\verb|    control.name "Master"|\\
+\verb|    control.card sndrpihifiberry|\\
+\verb|}|\\
+\verb|pcm.!default {|\\
+\verb|    type       plug|\\
+\verb|    slave.pcm  "softvolume"|\\
+\verb|}|
 
-23.03.2018 TODO:\todo{Überprüfen, warum das zumindest mit dem omxplayer nicht funzt\dots}\\
-Die von @smutbert bereitgestellte \filenam{/etc/asound.conf} funktioniert mit 
-Raspbian Stretch 2018-03-13 beim omxplayer nicht: Mediadatei bleibt sofort bei 
-0:00 stehen!\\
-\stdout{\# ab hier alter Inhalt:}\\
-\stdout{\#\#pcm.!default \{}\\
-\stdout{\#\# type hw card 0}\\
-\stdout{\#\#\}}\\
-\stdout{\#\#ctl.!default \{}\\
-\stdout{\#\# type hw card 0}\\
-\stdout{\#\#\}}\\
-\stdout{\#}\\
-\stdout{\#pcm.hifiberryMiniAmp \{}\\
-\stdout{\#    type softvol}\\
-\stdout{\#    slave.pcm "plughw:0"}\\
-\stdout{\#    control.name "Master"}\\
-\stdout{\#    control.card 0}\\
-\stdout{\#\}}\\
-\stdout{\#pcm.!default \{}\\
-\stdout{\#    type       plug}\\
-\stdout{\#    slave.pcm  "hifiberryMiniAmp"}\\
-\stdout{\#\}}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis zum \textit{omxplayer}}
+Die obige von \textit{@smutbert} bereitgestellte Version der 
+\filenam{/etc/asound.conf} ermöglicht über die Definition von \textit{pcm.dmixer}
+das gleichzeitige Abspielen von mehreren Audioquellen.\\
+Leider funktioniert diese Variante mit dem \textit{omxplayer} nicht: Die
+Mediadatei bleibt sofort bei 0:00 stehen! Der \textit{omxplayer} kann jedoch
+durch zweimaliges Drücken von \textit{Ctrl-C} beendet werden, die Anzeige
+\texttt{have a nice day ;)} erscheint allerdings nicht, da der \textit{omxplayer}
+anscheinend irgendwo hängt\dots
 
+Es gibt hier leider nur die beiden sich gegenseitig ausschließenden Möglichkeiten:\\
+1. saubere ALSA-Konfiguration mit Mixerfunktionalität, aber kein \textit{omxplayer}!\\
+2. \textit{omxplayer} mit einfacherer(?) ALSA-Konfiguration ohne Mixer verwenden.
+\end{bclogo}
+
+%\stdout{\# ab hier alter Inhalt:}\\
+%\stdout{\#\#pcm.!default \{}\\
+%\stdout{\#\# type hw card 0}\\
+%\stdout{\#\#\}}\\
+%\stdout{\#\#ctl.!default \{}\\
+%\stdout{\#\# type hw card 0}\\
+%\stdout{\#\#\}}\\
+%\stdout{\#}\\
+%\stdout{\#pcm.hifiberryMiniAmp \{}\\
+%\stdout{\#    type softvol}\\
+%\stdout{\#    slave.pcm "plughw:0"}\\
+%\stdout{\#    control.name "Master"}\\
+%\stdout{\#    control.card 0}\\
+%\stdout{\#\}}\\
+%\stdout{\#pcm.!default \{}\\
+%\stdout{\#    type       plug}\\
+%\stdout{\#    slave.pcm  "hifiberryMiniAmp"}\\
+%\stdout{\#\}}
+\verb|# Einstellungen ohne Mixerfunktionalität:|\\
+\verb|# Diese Variante nur verwenden, wenn auf dem Raspiblaster der omxplayer|\\
+\verb|# verwendet wird.|\\
+\verb|pcm.hifiberryMiniAmp {|\\
+\verb|    type softvol|\\
+\verb|    slave.pcm "plughw:0"|\\
+\verb|    control.name "Master"|\\
+\verb|    control.card 0|\\
+\verb|}|\\
+\verb|pcm.!default {|\\
+\verb|    type       plug|\\
+\verb|    slave.pcm  "hifiberryMiniAmp"|\\
+\verb|}|
+
+
+\newpage
 \cmdPi{rm /home/pi/.asoundrc}\\
 \cmdPi{reboot}\\
 \cmdPi{speaker-test -c 2}\comment{speaker-test -D hifiberryMiniAmp -c 2}\\
@@ -221,7 +264,6 @@ Raspbian Stretch 2018-03-13 beim omxplayer nicht: Mediadatei bleibt sofort bei
 \label{fig:alsamixer}
 \end{figure}
 
-\newpage
 Im \textit{alsamixer} wird der in \filenam{/etc/asound.conf} definierte Regler \textit{Master} angezeigt.
 \begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
 Die Lautstärke kann jetzt über ALSA geregelt werden!\\
@@ -229,8 +271,9 @@ Die Lautstärke kann jetzt über ALSA geregelt werden!\\
 Lautstärkeregler in der Taskleiste von Raspbian Desktop PIXEL.
 \end{bclogo}
 
-\uline{Test:}\\
-\cmdPi{omxplayer -o alsa "01 Saga - Wind Him Up.wav"}
+%% Aug. 11th 2018: Don't show the omxplayer command because it doesn't work properly on ALSA mixer definitions!
+%\uline{Test:}\\
+%\cmdPi{omxplayer -o alsa "01 Saga - Wind Him Up.wav"}
 
 
 \section{{\CDROM}-Laufwerk am {\RPi} in Betrieb nehmen}
