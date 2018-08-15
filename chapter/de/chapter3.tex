@@ -70,6 +70,15 @@ IP-Adresse und die Benutzerkennung \cmd{pi} samt Passwort (siehe Abbildungen
 
 \newpage
 \section{Raspbian einrichten}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+In diesem Tutorial wird immer wieder auf die beiden Konfigurationsdateien 
+\filenam{/boot/config.txt} und \filenam{/etc/asound.conf} verwiesen. Nach dem
+Download der gesamten Bedienungsanleitung gibt es dort das Unterverzeichnis
+\filenam{conf}, in dem diese (und weitere) Konfigurationsdateien enthalten sind.
+Diese Vorlagen können 1:1 oder mit ganz wenigen Anpassungen übernommen werden.
+Details sind den jeweiligen Schritten zu entnehmen.
+\end{bclogo}
+
 \subsection*{raspi-config}
 \cmdPi{sudo raspi-config}\\
 \stdout{1 Change User Password \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\comment{\zB "raspiBlaster"}\\
@@ -101,6 +110,10 @@ ergänzt werden.
 
 \cmdPi{sudo nano /boot/config.txt}\\
 \editor{lcd\_rotate=2}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Eine Vorlage der Datei \filenam{/boot/config.txt} befindet sich im
+Downloadbereich der Bedienungsanleitung im Unterverzeichnis \filenam{conf}
+\end{bclogo}
 
 \subsection*{Anpassung des Raspbian-PIXEL-Desktops}
 \uline{Aussehen anpassen:} \comment{reine Geschmackssache}\\
@@ -119,7 +132,7 @@ Folgende Zeile unter \cmd{[Seat: *]} einfügen:
 \cmdPi{sudo nano /etc/lightdm/lightdm.conf}\\
 \editor{[Seat: *]\\xserver-command=X -s 0 -dpms}
 
-
+\newpage
 \section{HiFiBerry MiniAmp installieren}
 \uline{Quellen:}\\
 \url{https://www.hifiberry.com/shop/boards/miniamp}\\
@@ -136,10 +149,14 @@ Entfernen des Eintrages für das onboard-Soundmodul (Klinke und HDMI):\\
 Auskommentieren oder Löschen des Eintrages \cmd{dtparam=audio=on},\\
 stattdessen "Device Tree Overlay File" für MiniAmp laden:
 
-\newpage
 \cmdPi{sudo nano /boot/config.txt}\\
 \editor{\#dtparam=audio=on\\\vdots\\dtoverlay=hifiberry-dac}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Eine Vorlage der Datei \filenam{/boot/config.txt} befindet sich im
+Downloadbereich der Bedienungsanleitung im Unterverzeichnis \filenam{conf}
+\end{bclogo}
 
+\newpage
 \subsection{ALSA konfigurieren über \filenam{/etc/asound.conf}}
 \begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
 Es ist zu überprüfen, ob im Homeverzeichnis des Benutzers \cmd{pi} die Datei
@@ -166,6 +183,11 @@ ALSA-Einstellungen enthält und die Einstellungen von
 \stdout{\ \ Sub-Gerät \#0: subdevice \#0}
 
 \subsection{ALSA für Lautstärkeregelung aufbohren}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Eine Vorlage der Datei \filenam{/etc/asound.conf} befindet sich im
+Downloadbereich der Bedienungsanleitung im Unterverzeichnis \filenam{conf}
+\end{bclogo}
+
 \uline{erweiterter Inhalt von \filenam{/etc/asound.conf}:}\\
 \cmdPi{cat /etc/asound.conf}\\
 %\stdout{\# Einstellungen von @smutbert aus dem deutschen RaspberryPi-Forum:}\\
@@ -250,8 +272,6 @@ Es gibt hier leider nur die beiden sich gegenseitig ausschließenden Möglichkeite
 \verb|    slave.pcm  "hifiberryMiniAmp"|\\
 \verb|}|
 
-
-\newpage
 \cmdPi{rm /home/pi/.asoundrc}\\
 \cmdPi{reboot}\\
 \cmdPi{speaker-test -c 2}\comment{speaker-test -D hifiberryMiniAmp -c 2}\\
@@ -357,27 +377,36 @@ gepacktes \cmd{tar}-Archiv (ein sogenannter \textit{Tarball}) vorliegen:
 \url{https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
 \url{https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}
 
-Davon ausgehend, dass der Download auf einem (Linux-)PC erfolgte, müssen diese
-drei Tarballs zunächst per \textit{ssh} auf den {\RPi} in das Verzeichnis 
-\cmd{/home/pi/audacious\_raspiblaster} kopiert werden:
+%%%%%%% use curl instead of this:
+%Davon ausgehend, dass der Download auf einem (Linux-)PC erfolgte, müssen diese
+%drei Tarballs zunächst per \textit{ssh} auf den {\RPi} in das Verzeichnis 
+%\cmd{/home/pi/audacious\_raspiblaster} kopiert werden:
+\uline{Download der drei Tarballs auf dem {\RPi} mittels \cmd{curl} durchführen:}
 
 \cmdPi{cd /home/pi}\\
-\cmdPi{mkdir audacious\_raspiblaster}
+\cmdPi{mkdir audacious\_raspiblaster}\\
+\cmdPi{cd audacious\_raspiblaster}\\
+\cmdPi{curl https://distfiles.audacious-media-player.org/libaudclient-3.5-rc2.tar.bz2}\\
+\verb|     >libaudclient-3.5-rc2.tar.bz2|\\
+\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
+\verb|     >audacious-3.9.tar.bz2|\\
+\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}\\
+\verb|     >audacious-plugins-3.9.tar.bz2|\\
 
-\cmdPC{scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}\\
-Am PC erfolgt eine Passwortabfrage für den Benutzer \cmd{pi} auf dem Host
-\cmd{raspiblaster}. Nur bei richtiger Eingabe können die Dateien per 
-\textit{ssh}-Protokoll vom PC auf den {\RPi} übertragen werden.
-
-\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
-An einem Windows-PC, auf dem die \textit{ssh}-Software \textit{PuTTY} 
-installiert ist, lautet das Kommando im Windows-Konsolenfenster 
-(\cmd{cmd.exe}):\\
-\cmdWin{\textcolor{red}{\textbf{p}}scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}
-\end{bclogo}
+%%%%%%% use curl instead of this:
+%\cmdPC{scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}\\
+%Am PC erfolgt eine Passwortabfrage für den Benutzer \cmd{pi} auf dem Host
+%\cmd{raspiblaster}. Nur bei richtiger Eingabe können die Dateien per 
+%\textit{ssh}-Protokoll vom PC auf den {\RPi} übertragen werden.
+%
+%\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+%An einem Windows-PC, auf dem die \textit{ssh}-Software \textit{PuTTY} 
+%installiert ist, lautet das Kommando im Windows-Konsolenfenster 
+%(\cmd{cmd.exe}):\\
+%\cmdWin{\textcolor{red}{\textbf{p}}scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}
+%\end{bclogo}
 
 \uline{Entpacken der Tarballs:}\\
-\cmdPi{cd audacious\_raspiblaster}\\
 \cmdPi{tar -xvf audacious-3.9.tar.bz2}\\
 \cmdPi{tar -xvf audacious-plugins-3.9.tar.bz2}\\
 \cmdPi{tar -xvf libaudclient-3.5-rc2.tar.bz2}
@@ -404,8 +433,9 @@ installiert sind:\\
 
 Das Kommando \cmd{./configure} entdeckt, dass einige Programmpakete nicht 
 installiert sind:\\
-\cmdPi{sudo apt install libglib2.0-dev \ \ \ \ \ \ \ \ }\comment{wegen Meldung: No package 'glib-2.0' found}\\
-\cmdPi{sudo apt install libgtk2.0 libgtk2.0-dev}\comment{wegen Meldung: No package 'gtk+-2.0' found\\$\rightarrow$Die Installation dieser Pakete dauert auf dem {\RPi} 3B ca. 5 Minuten}
+\cmdPi{sudo apt install libglib2.0-dev \ \ \ \ \ \ \ \ }\comment{wegen Meldung: \footnotesize{No package 'glib-2.0' found}}\\
+\cmdPi{sudo apt install libgtk2.0 libgtk2.0-dev}\comment{wegen Meldung: \footnotesize{No package 'gtk+-2.0' found}\\
+$\rightarrow$Die Installation dieser Pakete dauert auf dem {\RPi} 3B ca. 5 Minuten}
 
 \cmdPi{./configure}\\
 \cmdPi{make -j4}\comment{\cmd{-j4} bewirkt, dass auf dem {\RPi} 3B alle vier Cores verwendet werden}\\
@@ -449,8 +479,8 @@ Ferner fehlt ein Paket für flac (was ich mittlerweile als wichtig empfinde):\\
 \cmdPi{sudo apt install libfluidsynth-dev \ \ \ \ \ \ }\comment{dto. für MIDI-Plugin}\\
 \cmdPi{sudo apt install libmpg123-dev \ \ \ \ \ \ \ \ \ \ }\comment{dto. für MP3-Codec}\\
 \cmdPi{sudo apt install libfaad-dev \ \ \ \ \ \ \ \ \ \ \ \ }\comment{dto. für AAC-Codec}\\
-\cmdPi{sudo apt install libwavpack-dev \ \ \ \ \ \ \ \ \ }\comment{dto. für WAV-Codec}\\
-\cmdPi{\# sudo apt install libsamplerate-dev \ \ \ \ }%\comment{Wichtig für das Plugin Speed+Pitch: Das gefällt Alt+Jung!}
+\cmdPi{sudo apt install libwavpack-dev \ \ \ \ \ \ \ \ \ }\comment{dto. für WAV-Codec}%\\
+%\cmdPi{\# sudo apt install libsamplerate-dev \ \ \ \ }%\comment{Wichtig für das Plugin Speed+Pitch: Das gefällt Alt+Jung!}
 
 \uline{Paket neon27 für  HTTP/HTTPS-Transport installieren:}\\
 \cmdPi{sudo apt install libneon27-dev}
@@ -692,6 +722,11 @@ Configuration:
 damit immer noch ca. 5 Minuten:\\
 \cmdPi{make -j4}\comment{\cmd{-j4} bewirkt, dass auf dem {\RPi} 3B alle vier Cores verwendet werden}\\
 \cmdPi{sudo make install}
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Aufgrund der Volllast an auf allen vier Kernen kann die Temperatur des SOC
+durchaus ansteigen. Auf dem {\RPi} erscheint bisweilen das 
+Tem\-pe\-ra\-tur-Warn\-sym\-bol (rotes Thermometer.)
+\end{bclogo}
 
 %Den folgenden Befehl braucht's (mit dem neuen Raspbian Stretch 2018-03-13?) offenbar nicht mehr...
 %\cmdPi{sudo cp -r /usr/local/lib/audacious/pkgconfig /usr/local/lib/audacious/audacious /usr/local/lib/audacious/libaud* /usr/lib}\comment{{\dots}und auch hier die Bibliotheken nach /usr/lib kopieren}\\
@@ -707,9 +742,9 @@ heruntergeladenen Dateien aktualisiert und neu kompiliert werden:
 
 \cmdPi{git clone https://github.com/schlizbaeda/audacious-raspiblaster download}\\
 \cmdPi{cd /home/pi/download}\\
-\cmdPi{cp -r libaudclient-3.5-rc /home/pi/audacious-raspiblaster}\\
-\cmdPi{cp -r audacious-3.9 /home/pi/audacious-raspiblaster}\\
-\cmdPi{cp -r audacious-plugins-3.9 /home/pi/audacious-raspiblaster}
+\cmdPi{cp -r libaudclient-3.5-rc2 /home/pi/audacious\_raspiblaster}\\
+\cmdPi{cp -r audacious-3.9 /home/pi/audacious\_raspiblaster}\\
+\cmdPi{cp -r audacious-plugins-3.9 /home/pi/audacious\_raspiblaster}
 
 Anschließend in jedem Projektverzeichnis die Projekte mit dem geänderten Code 
 neu erstellen:\\

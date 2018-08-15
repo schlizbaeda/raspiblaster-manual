@@ -5,11 +5,11 @@ Da der {\Bezeichnung} auf dem {\RPi} 3B basiert, handelt es sich bei diesem
 Gerät um einen vollständigen Computer, auf dem das Betriebssystem 
 \textit{Raspbian} läuft. Dies ist die von der Foundation gewartete offizielle
 Linux-Distribution für den {\RPi}, die von \textit{Debian GNU/Linux} abgeleitet
-wurde. Ein solcher Computer kann prinzipiell mit zusätzlicher Software erweitert
-werden.\\
+wurde. Ein solcher Computer kann prinzipiell mit beliebiger zusätzlicher 
+Software erweitert werden.\\
 Dieses Kapitel beschreibt die Installation und Anwendung des Programms
 \textit{abcde}\\("`\textbf{A} \textbf{B}etter \textbf{CD} \textbf{E}ncoder"'),
-ein CD-Ripper für die Kommandozeile.
+eines CD-Rippers für die Kommandozeile.
 
 \begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
 \textit{Rippen} bezeichnet das Kopieren von einer Datenquelle auf ein anderes
@@ -17,8 +17,9 @@ Speichermedium wie eine Festplatte.\\
 Die rechtliche Grundlage, von einer urheberrechtlich geschützten Datenquelle 
 eine Kopie mit Hilfe eines Rip-Programms zu erstellen, ist weltweit uneinheitlich
 geregelt. Im europäischen Raum gilt vielfach, dass für rein private Zwecke
-Kopien in eingeschränktem Rahmen einer sogenannten \textit{Privatkopie} erlaubt
-sind.
+Kopien im eingeschränkten Rahmen einer sogenannten \textit{Privatkopie} erlaubt
+sind.\\
+(Quelle: \url{https://de.wikipedia.org/wiki/Rippen})
 \end{bclogo}
 
 
@@ -33,9 +34,9 @@ heruntergeladen und bearbeitet werden.\\
 Im Gegensatz zu vielen anderen CD-Ripper-Pro\-gram\-men ist \textit{abcde} 
 eine kommandozeilenbasierende Software, von daher relativ ressourcenschonend
 und somit auch für den {\RPi} geeignet. Die meisten Linux-Distri\-bu\-tionen 
-enthalten \textit{abcde} in ihrem Paketverwaltungssystem und können deshalb 
-einfach installiert werden. Der Quellcode von abcde befindet sich unter
-\url{https://abcde.einval.com/download/}
+enthalten \textit{abcde} in ihrem Paketverwaltungssystem, deshalb ist eine 
+einfache Installation möglich. Der Quellcode von \textit{abcde} befindet sich
+unter \url{https://abcde.einval.com/download/}
 
 \subsection{Installation von \textit{abcde} über die Raspbian-Paketverwaltung \textit{apt}}
 Diese Installationsanleitung funktioniert nicht nur auf dem {\RPi}, sondern auf
@@ -49,15 +50,29 @@ installiert ist, wie \zB \textit{ubuntu} oder \textit{Linux Mint}.
 \cmdPi{sudo apt-get install glyrc \ \ \ }\comment{fehlt zumindest am PC bei Linux Mint 18.2}
 
 \subsection{Anpassung der Konfigurationsdatei \filenam{/etc/abcde.conf}}
+Diese Anleitung beschreibt, wie CDs im \textit{flac}-Format gerippt werden. 
+Hierbei handelt es sich um einen Audiokodierer/-dekodierer, der die Audiodaten
+\textbf{verlustfrei} umwandelt und lediglich komprimiert, aber keine vermeintlich
+unhörbaren Teile entfernt, um die resultierenden Dateien weiter zu verkleinern,
+so wie dies beispielsweise bei \textit{Vorbis} oder \textit{MP3} als sogenannte
+verlustbehaftete Audiokompression geschieht.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.33\textwidth]{flac_logo.png}
+\caption{FLAC - Free Lossless Audio Codec}
+\label{fig:flac}
+\end{figure}
+
 \cmdPi{sudo nano /etc/abcde.conf}\\
 \verb|# abcde.conf -- Bearbeitete Version von schlizbäda für den Raspiblaster|\\
 \verb|#|\\
 \verb|# Diese Datei enthält im Original sehr viele Kommentarzeilen, die mit \#|\\
 \verb|# beginnen und Erläuterungen zu den einzelnen Optionen enthalten.|\\
-\verb|# Hier werden aus Platzgründen nur die effektiven Zeilen aufgelistet:|\\
-\verb|CDDBMETHOD=cddb,cdtext|\\
+\verb|# Hier werden aus Platzgründen nur die aktiven Zeilen aufgelistet:|\\
+%\verb|CDDBMETHOD=cddb,cdtext|\\ % don't use this option. It creates additional and unnecessary errors...
 \verb|HELLOINFO="`whoami`@`hostname`"|\\
 \verb|ACTIONS=default,playlist,getalbumart|\\
+\verb|FLACOPTS=-8|\\
 \verb|OUTPUTDIR=/home/`whoami`/Music|\\
 \verb|OUTPUTTYPE=flac|\\
 \verb|OUTPUTFORMAT='${ARTISTFILE}/${ALBUMFILE}/${TRACKNUM}_${TRACKFILE}'|\\
@@ -67,24 +82,26 @@ installiert ist, wie \zB \textit{ubuntu} oder \textit{Linux Mint}.
 \verb|EJECTCD=y|
 
 Auf eine Beschreibung der Optionen in den einzelnen Zeilen wird an dieser Stelle
-verzichtet. Die bei der Installation angelegte Originaldatei 
+verzichtet. Die bei der Installation von \textit{abcde} angelegte Originaldatei 
 \filenam{/etc/abcde.conf} enthält zu jeder Option erklärende Kommentare.
-Alternativ kann auch die mit dieser Bedienungsanleitung heruntergeladene Version
-von \filenam{abcde.conf} nach \filenam{/etc} kopiert werden:\\
-\cmdPi{sudo cp abcde.conf /etc}\comment{Alternative zum Editieren der Konfigurationsatei}\\
+%Mit dieser Bedienungsanleitung wurde eine Version von \filenam{abcde.conf} 
+%heruntergeladene, die direkt nach \filenam{/etc} kopiert werden kann:\\
+%\cmdPi{sudo cp abcde.conf /etc}\comment{Alternative zum Editieren der Konfigurationsatei}\\
+\begin{bclogo}[logo = \bclampe, noborder = true]{Hinweis}
+Eine Vorlage der Datei \filenam{/etc/abcde.conf} befindet sich im
+Downloadbereich der Bedienungsanleitung im Unterverzeichnis \filenam{conf}
+\end{bclogo}
 
 \section{Die erste CD mit \textit{abcde} rippen}
 \label{sect:rip}
-Um eine CD zu rippen, legt man die CD zunächst ins \CDROM-Laufwerk ein und
-\textbf{wartet, bis das Laufwerk die CD erkannt hat.} Jetzt gibt man einfach 
+Um eine CD zu rippen, legt man die gewünschte CD zunächst ins \CDROM-Laufwerk ein
+und \textbf{wartet, bis das Laufwerk die CD erkannt hat.} Jetzt gibt man einfach 
 \texttt{abcde} in das Terminalfenster ein:\\
 \cmdPi{abcde}\comment{Rippen der eingelegten CD}
 
-Alle gewünschten Optionen wurden bereits in der Datei
+Alle gewünschten Optionen wurden ja bereits in der Datei
 \filenam{/etc/abcde.conf} vorgenommen.
 
-
-\newpage
 Nach dem Programmstart wird das Inhaltsverzeichnis der CD eingelesen. Bei
 vorhandenem Internetzugang wird versucht, die Metadaten für die CD zu ermitteln
 und anzuzeigen:
@@ -365,12 +382,12 @@ und anzuzeigen:
 } % end of block \footnotesize{
 
 \normalsize{Die von der CD gerippten Musikstücke werden nach folgendem Schema in
-das Verzeichnis \filenam{/home/\textit{<Benutzername>}/Music} kopiert:\\
-\filenam{/home/\textit{<Benutzername>}/Music/\textit{<Interpret>}/\textit{<Album>}}\\
-\filenam{/home/\textit{<Benutzername>}/Music/Various\_Artists/\textit{<Album>}}
+das Verzeichnis \texttt{/home/\textit{<Benutzername>}/Music} kopiert:\\
+\texttt{/home/\textit{<Benutzername>}/Music/\textit{<Interpret>}/\textit{<Album>}}\\
+\texttt{/home/\textit{<Benutzername>}/Music/Various\_Artists/\textit{<Album>}}
 
 Die soeben von der CD "`{Saga -- The Very Best Of...}"' gerippten Musiktitel
-werden also im Verzeichnis \filenam{/home/pi/Music/Saga/The\_Very\_Best\_Of...}
+werden also im Verzeichnis \texttt{/home/pi/Music/Saga/The\_Very\_Best\_Of...}
 abgelegt:
 
 \cmdPi{ls -l /home/pi/Music/Saga/The\_Very\_Best\_Of...}\\
@@ -394,12 +411,12 @@ abgelegt:
 \stdout{-rw-r--r-- 1 pi pi \ \ \ \ \ 388 Aug 11 12:56 Saga\_\_The\_Very\_Best\_Of....flac.m3u}
 
 Neben den Musikdateien der 15 Titel der CD, die in das verlustfreie flac-Format
-gewandelt wurden, befindet sich dort eine \textit{m3u}-Datei mit allen Liedern
-der CD. Diese Datei kann von vielen Audio-Wiedergabeprogrammen sowohl unter
-Linux als auch unter Windows verarbeitet werden.\\
+gewandelt wurden, befindet sich in diesem Verzeichnis eine \textit{m3u}-Datei
+mit allen Liedern der CD. Diese Datei kann von vielen Audio-Wiedergabeprogrammen
+sowohl unter Linux als auch unter Windows verarbeitet werden.\\
 Das von \textit{abcde} ermittelte Coverbild wird grundsätzlich unter dem 
-Dateinamen \filenam{cover.jpg} abgelegt, da auch dies von vielen Programmen
-erkannt wird.
+Dateinamen \filenam{cover.jpg} abgelegt, da viele Wiedergabeprogramme dies
+so erkennen und erwarten.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.33\textwidth]{Saga.jpg}
@@ -408,6 +425,7 @@ erkannt wird.
 \end{figure}
 
 
+\newpage
 \subsection*{Ausgabe von Hilfetexten zur Software \textit{abcde}}
 In der Kommandozeile kann jederzeit eine kurze Anleitung ausgegeben werden:
 
@@ -419,11 +437,12 @@ In der Kommandozeile kann jederzeit eine kurze Anleitung ausgegeben werden:
 \section{Fehlerbehandlung}
 Die Bearbeitung von \textit{abcde} kann jederzeit durch Drücken der 
 Tastenkombination \textit{Ctrl-C} abgebrochen werden, weil beispielsweise noch
-ein Schreibfehler in den Datenbankeinträgen aus dem Internet entdeckt wurde.
+ein Schreibfehler in den Datenbankeinträgen aus dem Internet (CDDB, musicbrainz)
+entdeckt wurde. 
 Neben den Zieldaten werden im Home-Verzeichnis des Anwenders in einem 
-Unterverzeichnis Zwischendaten abgelegt:
+Unterverzeichnis temporäre Zwischendaten abgelegt:
 
-\cmdPi{ls -l ~}\comment{Anzeige der Dateien im Homeverzeichnis}\\
+\cmdPi{ls -l \~}\comment{Anzeige der Dateien im Homeverzeichnis}\\
 \stdout{total 1543}\\
 \stdout{drwxrwxr-x 4 pi pi \ \ \ 4096 Aug \ 9 22:01 abcde-2.9}\\
 \stdout{drwxr-xr-x 2 pi pi \ \ \ 4096 Aug 11 15:32 abcde.f010540f}\\
@@ -436,8 +455,8 @@ gelöscht. Bei Abbrüchen bleiben sie jedoch bestehen. Wird \textit{abcde} jetzt
 erneut gestartet, so sucht die Software zuerst ein eventuell vorhandenes 
 Hilfsverzeichnis. Wird sie fündig, so liest sie daraus die Daten aus und lässt
 keine Bearbeitung durch den Benutzer mehr zu, da dies ja bereits geschah.\\
-Um dieses Verhalten zu umgehen, werden vor dem Aufruf von \textit{abcde} alle
-diese Hilfsverzeichnisse manuell gelöscht:
+Um dieses Verhalten zu umgehen, müssen vor dem Aufruf von \textit{abcde} alle
+diese Hilfsverzeichnisse manuell gelöscht werden:
 
 \cmdPi{rm -r abcde.*}\comment{Löschen aller Hilfsverzeichnisse}\\
 \cmdPi{abcde \ \ \ \ \ \ \ }\comment{Erneuter Programmaufruf}
@@ -455,12 +474,12 @@ Konkret würde im obigen Beispiel auch das Verzeichnis
 \section{Suche von Coverbildern}
 Bei manchen CDs sind in den Internetdatenbanken keine Coverbilder und auch keine
 Titelnamen hinterlegt. Die Metadaten müssen dann per Hand eingegeben werden!
-Coverbilder können in diesem Fall mit dem Browser über eine Suchmaschine Ihres
+Coverbilder können in diesem Falle mit dem Browser über eine Suchmaschine Ihres
 Vertrauens gesucht werden.\\
 Am {\RPi} ist der installierte Chromium-Browser insbesondere bei der Suche nach
-Bildern relativ langsam. Das beim {\Bezeichnung} verwendete 7-Zoll-Display 
-ermöglicht mit seiner relativ geringen Auflösung von 800 x 480 Pixeln zudem
-keine besonders übersichtliche Ausgabe der Suchergebnisse. Dies kann nun entweder
+Bildern relativ langsam. Zudem ermöglicht das beim {\Bezeichnung} verwendete 
+7-Zoll-Dis\-play mit seiner relativ geringen Auflösung von 800 x 480 Pixeln keine
+besonders übersichtliche Ausgabe der Suchergebnisse. Dies kann nun entweder
 in Kauf genommen werden, oder die Suche erfolgt auf einem schnelleren Computer
 (PC, Laptop).
 
@@ -475,9 +494,10 @@ Kommandozeilenparameter \filenam{-X} möglich.
 
 Einerseits werden damit gefundene Coverbilder gleich auf dem Bildschirm des PCs
 angezeigt. Andererseits können bei fehlenden Coverbildern in der 
-Internet-Datenbank mit dem PC-Browser schneller Ersatzbilder gesucht werden. 
-Die (oftmals kryptische) URL der Bilder kann dann mit \textit{copy-paste} ohne
-Tippfehler in das ssh-Fenster des {\RPi} kopiert werden.
+Internet-Datenbank mit einem schnellen PC-Browser Ersatzbilder bequemer gesucht
+werden. Die (oftmals kryptische) URL der Bilder kann dann mittels 
+\textit{copy-paste} ohne Tippfehler in das ssh-Fenster des {\RPi} kopiert
+werden.
 
 
 \section{Benchmark}
@@ -489,21 +509,23 @@ Dafür gibt es (mindestens) zwei Gründe:
       darf oder will Linux auf diesem PC nicht zusätzlich installieren.\\
       \textit{abcde} kann jedoch nur unter Linux ausgeführt werden.}
 \item{Auf dem PC/Laptop läuft \textit{abcde} (deutlich) langsamer als auf
-      dem \RPi.}
+      dem \RPi, weil an diesem ein wesentlich schnelleres \CDROM-Laufwerk
+      angeschlossen ist, als am PC verbaut wurde.}
 \end{compactitem}
 
 \subsection*{Wie bitte?}
-Ein {\RPi} ist doch im Vergleich zu einem selbst in die Jahre gekommenen PC
-relativ langsam! Die Geschwindigkeit beim Rippen einer CD hängt jedoch in erster
-Linie von der Lesegeschwindigkeit des \CDROM-Laufwerks ab und kaum von der
+Ein {\RPi} ist doch im Vergleich zu einem -- selbst in die Jahre gekommenen -- 
+PC relativ langsam! Die Geschwindigkeit beim Rippen einer CD hängt jedoch in
+erster Linie von der Lesegeschwindigkeit des \CDROM-Laufwerks ab und kaum von der
 Geschwindigkeit des Prozessors (CPU). Daher ist es möglich, einen {\Bezeichnung}
 zu haben, der diese spezielle Aufgabe letztlich schneller durchführt als ein
 PC.
 
-Die in Abschnitt \ref{sect:rip} genannte Beispiel-CD "`{SAGA - The Very Best
-Of...}"' (15 Titel mit einer Gesamtspielzeit von 1:09:37) wurde mit \textit{abcde}
-auf einem {\Bezeichnung} mit einem relativ neuen 5,25 Zoll bluray-Laufwerk 
-von 2017 gerippt sowie auf drei verschiedenen Laptops mit Linux Mint:
+Die in Abschnitt \ref{sect:rip} genannte Beispiel-CD "`{Saga -- The Very Best
+Of...}"' (15 Titel mit einer Gesamtspielzeit von 1:09:37) wurde mit 
+\textit{abcde} auf einem {\Bezeichnung} mit einem relativ neuen 5,25 Zoll 
+Blu-ray-Laufwerk von 2017 gerippt sowie auf vier verschiedenen PCs mit 
+Linux Mint:
 
 \begin{table}[!h]
 \centering
@@ -513,9 +535,10 @@ von 2017 gerippt sowie auf drei verschiedenen Laptops mit Linux Mint:
 \textbf{Rechner}		&	\textbf{Typ/Laufwerk}	&	\textbf{Jahr}	&	\textbf{Dauer}	&	\textbf{Betriebssystem}\\
 \hline
 		{\RPi} 3B		&	LG BH16NS55				&	2017			&	\ 8,5 Minuten	&	Raspbian Stretch\\
-		Lenovo			&	Thinkpad T500			&	2010			&	11,5 Minuten	&	Linux Mint 19\\ 
-		Toshiba			&	Satellite L670D-13D		&	2012			&	\ 9,5 Minuten	&	Linux Mint 18.2\\ 
-		Samsung			&	NP350E7C-S0GDE			&	2013			&	14(!) Minuten	&	Linux Mint 18.2\\ 
+		Laptop Lenovo	&	Thinkpad T500			&	2010			&	11,5 Minuten	&	Linux Mint 19\\ 
+		Laptop Toshiba	&	Satellite L670D-13D		&	2012			&	\ 9,5 Minuten	&	Linux Mint 18.2\\ 
+		Laptop Samsung	&	NP350E7C-S0GDE			&	2013			&	14 Minuten		&	Linux Mint 18.2\\ 
+		Gaming-PC 		&	LG GH24NSD1				&	2017			&	$>$20 Minuten	&	Linux Mint 18.2\\
 \hline
 \end{tabular}
 \vspace{0.5cm}
@@ -525,4 +548,12 @@ von 2017 gerippt sowie auf drei verschiedenen Laptops mit Linux Mint:
 Dies zeigt, dass ein {\RPi} bei Verwendung vernünftiger Peripherie durchaus
 konkurrenzfähig ist.
 
-Viel Spaß beim Rippen von CDs unter Linux mit \textit{abcde}!
+Zum selbst zusammengestellten Gaming-PC ist kurz anzumerken, dass hier 
+prinzipiell auf für's Gaming optimierte Komponenten Wert gelegt wurde. Da 
+das \CDROM-Laufwerk jedoch keine kritische Rolle spielt, wurde das eher
+günstige (aber offenbar bei Audio-CDs relativ langsame) LG-Modell GH24NSD1
+eingebaut. Bei dieser spezifischen Anwendung (CDs rippen) bremst es den an
+sich sehr flotten Rechner stark aus.\\
+
+Viel Spaß beim Rippen von CDs unter Linux mit \textit{abcde} am {\Bezeichnung}
+oder am (richtigen) PC!
