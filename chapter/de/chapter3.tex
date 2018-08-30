@@ -381,17 +381,21 @@ gepacktes \cmd{tar}-Archiv (ein sogenannter \textit{Tarball}) vorliegen:
 %Davon ausgehend, dass der Download auf einem (Linux-)PC erfolgte, müssen diese
 %drei Tarballs zunächst per \textit{ssh} auf den {\RPi} in das Verzeichnis 
 %\cmd{/home/pi/audacious\_raspiblaster} kopiert werden:
-\uline{Download der drei Tarballs auf dem {\RPi} mittels \cmd{curl} durchführen:}
+\uline{Download der drei Tarballs auf dem {\RPi} mittels \cmd{wget} durchführen:}
 
 \cmdPi{cd /home/pi}\\
 \cmdPi{mkdir audacious\_raspiblaster}\\
 \cmdPi{cd audacious\_raspiblaster}\\
-\cmdPi{curl https://distfiles.audacious-media-player.org/libaudclient-3.5-rc2.tar.bz2}\\
-\verb|     >libaudclient-3.5-rc2.tar.bz2|\\
-\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
-\verb|     >audacious-3.9.tar.bz2|\\
-\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}\\
-\verb|     >audacious-plugins-3.9.tar.bz2|\\
+%%%%%%% and even don't use curl but wget!
+%\cmdPi{curl https://distfiles.audacious-media-player.org/libaudclient-3.5-rc2.tar.bz2}\\
+%\verb|     >libaudclient-3.5-rc2.tar.bz2|\\
+%\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
+%\verb|     >audacious-3.9.tar.bz2|\\
+%\cmdPi{curl https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}\\
+%\verb|     >audacious-plugins-3.9.tar.bz2|\\
+\cmdPi{wget https://distfiles.audacious-media-player.org/libaudclient-3.5-rc2.tar.bz2}\\
+\cmdPi{wget https://distfiles.audacious-media-player.org/audacious-3.9.tar.bz2}\\
+\cmdPi{wget https://distfiles.audacious-media-player.org/audacious-plugins-3.9.tar.bz2}\\
 
 %%%%%%% use curl instead of this:
 %\cmdPC{scp *.tar.bz2 pi@raspiblaster:/home/pi/audacious\_raspiblaster}\\
@@ -407,9 +411,9 @@ gepacktes \cmd{tar}-Archiv (ein sogenannter \textit{Tarball}) vorliegen:
 %\end{bclogo}
 
 \uline{Entpacken der Tarballs:}\\
+\cmdPi{tar -xvf libaudclient-3.5-rc2.tar.bz2}\\
 \cmdPi{tar -xvf audacious-3.9.tar.bz2}\\
-\cmdPi{tar -xvf audacious-plugins-3.9.tar.bz2}\\
-\cmdPi{tar -xvf libaudclient-3.5-rc2.tar.bz2}
+\cmdPi{tar -xvf audacious-plugins-3.9.tar.bz2}
 
 
 \subsection{libaudclient-3.5-rc2 kompilieren}
@@ -740,8 +744,9 @@ Quellcode vom GitHub-Re\-po\-si\-to\-ry
 werden und die drei soeben erstellten \textit{audacious}-Projekte mit den 
 heruntergeladenen Dateien aktualisiert und neu kompiliert werden:
 
+\cmdPi{cd /home/pi}\\
 \cmdPi{git clone https://github.com/schlizbaeda/audacious-raspiblaster download}\\
-\cmdPi{cd /home/pi/download}\\
+\cmdPi{cd download}\\
 \cmdPi{cp -r libaudclient-3.5-rc2 /home/pi/audacious\_raspiblaster}\\
 \cmdPi{cp -r audacious-3.9 /home/pi/audacious\_raspiblaster}\\
 \cmdPi{cp -r audacious-plugins-3.9 /home/pi/audacious\_raspiblaster}
