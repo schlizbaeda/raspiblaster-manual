@@ -2,7 +2,7 @@
 \chapter{CDs rippen mit \textit{abcde}}
 
 Da der {\Bezeichnung} auf dem {\RPi} 3B basiert, handelt es sich bei diesem
-Gerät um einen vollständigen Computer, auf dem das Betriebssystem 
+Gerät um einen (turing-)vollständigen Computer, auf dem das Betriebssystem 
 \textit{Raspbian} läuft. Dies ist die von der Foundation gewartete offizielle
 Linux-Distribution für den {\RPi}, die von \textit{Debian GNU/Linux} abgeleitet
 wurde. Ein solcher Computer kann prinzipiell mit beliebiger zusätzlicher 
@@ -29,7 +29,7 @@ die Formate \textit{flac}, \textit{m4a}, \textit{mp3}, \textit{mpc},
 \textit{ogg}, \textit{opus}, \textit{mka}, \textit{spx}, \textit{vorbis},
 \textit{wav}, \textit{wv}, \textit{ape}, \textit{aiff} (Stand Programmversion
 2.8.x) kodiert werden. Metadaten wie Interpret, Titel, Album usw. können von
-den Datenbankservern \textit{Free DB (CDDB)} oder \textit{musicbrainz} 
+den Datenbankservern \textit{freedb (CDDB)} oder \textit{MusicBrainz}
 heruntergeladen und bearbeitet werden.\\
 Im Gegensatz zu vielen anderen CD-Ripper-Pro\-gram\-men ist \textit{abcde} 
 eine kommandozeilenbasierende Software, von daher relativ ressourcenschonend
@@ -54,8 +54,8 @@ Diese Anleitung beschreibt, wie CDs im \textit{flac}-Format gerippt werden.
 Hierbei handelt es sich um einen Audiokodierer/-dekodierer, der die Audiodaten
 \textbf{verlustfrei} umwandelt und lediglich komprimiert, aber keine vermeintlich
 unhörbaren Teile entfernt, um die resultierenden Dateien weiter zu verkleinern,
-so wie dies beispielsweise bei \textit{Vorbis} oder \textit{MP3} als sogenannte
-verlustbehaftete Audiokompression geschieht.
+so wie dies bei verlustbehafteter Audiokompression, beispielsweise bei
+\textit{Vorbis} oder \textit{MP3} geschieht.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.33\textwidth]{flac_logo.png}
@@ -99,8 +99,8 @@ und \textbf{wartet, bis das Laufwerk die CD erkannt hat.} Jetzt gibt man einfach
 \texttt{abcde} in das Terminalfenster ein:\\
 \cmdPi{abcde}\comment{Rippen der eingelegten CD}
 
-Alle gewünschten Optionen wurden ja bereits in der Datei
-\filenam{/etc/abcde.conf} vorgenommen.
+Es sind keine Kommandozeilenparameter erforderlich, da ja alle gewünschten
+Optionen bereits in der Datei \filenam{/etc/abcde.conf} vorgenommen wurden.
 
 Nach dem Programmstart wird das Inhaltsverzeichnis der CD eingelesen. Bei
 vorhandenem Internetzugang wird versucht, die Metadaten für die CD zu ermitteln
@@ -500,6 +500,45 @@ werden. Die (oftmals kryptische) URL der Bilder kann dann mittels
 werden.
 
 
+\section{MusicBrainz-Datenbank um eigene CD erweitern}
+Zur Ermittlung der Metadaten (Album, Künstler, Titel) greift \textit{abcde}
+auf die Internetdatenbanken \textit{MusicBrainz} und \textit{freedb (CDDB)}
+zu. \textit{freedb (CDDB)} wurde jedoch zum 13.06.2020 abgeschaltet, sodass
+\textit{abcde} die Informationen derzeit nur noch von \textit{MusicBrainz}
+holen kann.\\
+\url{https://musicbrainz.org/}
+
+Meistens erhält man von \textit{MusicBrainz} gut gepflegte Datensätze zur
+eingelegten CD. Bei einigen wenigen, vor allem relativ neuen CDs kann es
+jedoch vorkommen, dass die entsprechenden Daten noch nicht bei
+\textit{MusicBrainz} hinterlegt sind. Es spricht in solchen Fällen dafür,
+sozusagen als Gegenleistung die Daten selbst auf \textit{MusicBrainz} zu
+ergänzen.\\
+Grundsätzlich muss für die Bearbeitung der \textit{MusicBrainz}-Datenbank
+zunächst eine Benutzerkennung eingerichtet werden:\\
+\url{https://musicbrainz.org/register?returnto=%2F}
+
+Nun können die Daten auf \textit{MusicBrainz} bearbeitet werden. Die
+Zuordnung einer physikalischen CD zu einem Musikalbum erfolgt über eine
+sogenannte Disc-ID  (\url{https://musicbrainz.org/doc/Disc_ID}).\\
+\url{https://musicbrainz.org/doc/How_to_Add_Disc_IDs}
+
+\textit{MusicBrainz} empfiehlt, zur Ermittlung den hauseigenen Tagger
+\textit{Picard} zu verwenden. Die Installation unter Raspbian erfolgt
+am einfachsten über\\
+\cmdPi{sudo apt-get install picard}
+
+Dies ist eine Software mit grafischer Oberfläche. Durch Anklicken der
+Schaltfläche "`Lookup CD"' öffnet sich ein Fenster, in dem die alle Einträge
+zur Disk-ID der eingelegten CD angezeigt werden. Bei fehlenden Daten auf
+\textit{MusicBrainz} ist diese Liste leer. Ein Klick auf die Schaltfläche
+"`Lookup in Browser"' öffnet auf dem {\RPi} den Chromium-Browser eine Seite
+mit Verweis auf die entsprechende Disc-ID:\\
+\url{https://musicbrainz.org/cdtoc/attach?id=oVrcadLLEHlq5y0sVWGujITZaAc-&tracks=11&toc=1+11+246632+150+20930+38049+56482+76386+94803+111833+138362+165089+183974+210078&tport=8000}\\
+Dort kann z.B. im Textfeld "`Search by artist"' der Künstler eingegeben
+werden. Anschließend werden  die Metadaten der CD hinterlegt. 
+
+
 \section{Benchmark}
 Bei den obigen Nachteilen stellt sich unweigerlich die Frage, warum führt man 
 \textit{abcde} nicht gleich auf dem PC aus?\\
@@ -509,8 +548,8 @@ Dafür gibt es (mindestens) zwei Gründe:
       darf oder will Linux auf diesem PC nicht zusätzlich installieren.\\
       \textit{abcde} kann jedoch nur unter Linux ausgeführt werden.}
 \item{Auf dem PC/Laptop läuft \textit{abcde} (deutlich) langsamer als auf
-      dem \RPi, weil an diesem ein wesentlich schnelleres \CDROM-Laufwerk
-      angeschlossen ist, als am PC verbaut wurde.}
+      dem \RPi, weil das am {\RPi} angeschlossene \CDROM-Laufwerk wesentlich
+      schneller ist, als das im PC verbaute.}
 \end{compactitem}
 
 \subsection*{Wie bitte?}
